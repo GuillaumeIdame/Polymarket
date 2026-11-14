@@ -45,3 +45,23 @@ def test_walk_forward_no_skill_no_signal():
     res, _ = sm.walk_forward(synth(skilled=0, seed=3), T0 + timedelta(days=40), n_perm=300)
     r = {x["definition"]: x for x in res.to_dicts()}
     assert r["calibration"]["p_value"] > 0.01 and abs(r["calibration"]["top_q_edge"]) < 0.05
+
+
+def test_trades_to_positions_buy_sell_and_unresolved():
+    tr = pl.DataFrame([
+        {"wallet": "w", "timestamp": 1794600000, "condition_id": "c1", "token_id": "a", "outcome_index": 0, "side": "BUY",
+         "price": 0.30, "size": 100.0, "title": "", "event_slug": "ev"},
+        {"wallet": "w", "timestamp": 1794600100, "condition_id": "c1", "token_id": "a", "outcome_index": 0, "side": "SELL",
+         "price": 0.80, "size": 50.0, "title": "", "event_slug": "ev"},
+        {"wallet": "w", "timestamp": 1794600200, "condition_id": "c2", "token_id": "b", "outcome_index": 1, "side": "BUY",
+         "price": 0.50, "size": 10.0, "title": "", "event_slug": None},
+    ])
+    rs = pl.DataFrame([{"condition_id": "c1", "status": "resolved", "payouts": [1000000, 0],
+                        "resolved_at": "2026-11-14T00:00:00Z", "was_disputed": False},
+                       {"condition_id": "c2", "status": "posed", "payouts": None, "resolved_at": None, "was_disputed": False}],
+                      schema_overrides={"payouts": pl.List(pl.Int64)})
+    p = sm.trades_to_positions(tr, rs).sort("t_entry")
+    assert p.height == 2                                   # unresolved c2 dropped
+    buy, sell = p.row(0, named=True), p.row(1, named=True)
+    assert abs(buy["e"] - 0.70) < 1e-12                    # bought YES at .30, YES won
+    assert abs(sell["p"] - 0.20) < 1e-12 and sell["x"] == 0.0 and abs(sell["e"] + 0.20) < 1e-12  # sold YES at .80: lost .20

@@ -24,20 +24,29 @@ def main(cutoff_days: int = 30):
     d = s.data_dir / "smartmoney"
     meta = json.loads((d / "fetch_meta.json").read_text())
     now = datetime.fromisoformat(meta["fetched_at"])
-    hist = pl.read_parquet(d / "history.parquet")
+    trades = pl.read_parquet(d / "trades.parquet")
+    resol = pl.read_parquet(d / "resolutions.parquet")
     stats = pl.read_parquet(d / "user_stats.parquet")
     hold = pl.read_parquet(d / "holders.parquet")
     mk = pl.read_parquet(d / "screener_markets.parquet")
-    pos = sm.positions_table(hist)
-    print(f"positions: {pos.height} resolved, {pos['wallet'].n_unique()} wallets, "
+    # trade-level history (unbiased); /v2/positions history was rejected as winner-biased
+    pos = sm.trades_to_positions(trades, resol)
+    now = datetime.fromisoformat(json.loads((d / "activity_meta.json").read_text())["fetched_at"])
+    print(f"resolved trades: {pos.height}, {pos['wallet'].n_unique()} wallets, "
           f"{pos['event_id'].n_unique()} events, entries {pos['t_entry'].min()} .. {pos['t_entry'].max()}")
+    integ = sm.integrity(pos)
+    integ["buckets"].write_parquet(d / "calibration.parquet")
+    print(f"integrity: excess win (capital-weighted) {integ['excess_cap_weighted']:+.4f}, passed={integ['passed']}")
+    print(integ["buckets"])
 
     # ---- walk-forward: score at cutoff, test on entries after it
     cutoff = now - timedelta(days=cutoff_days)
     res, panel = sm.walk_forward(pos, cutoff)
     res = res.with_columns(cutoff=pl.lit(cutoff.isoformat()))
     print(res)
-    ok = res.filter((pl.col("spearman") > 0) & (pl.col("p_bh") < 0.05) & (pl.col("top_q_net") > 0)) \
+    if not integ["passed"]:
+        res = res.with_columns(note=pl.lit("integrity check failed: sample is not calibrated"))
+    ok = res.clear() if not integ["passed"] else res.filter((pl.col("spearman") > 0) & (pl.col("p_bh") < 0.05) & (pl.col("top_q_net") > 0)) \
         if "p_bh" in res.columns else res.clear()
     validated = ok.sort("spearman", descending=True)["definition"].to_list()
     primary = validated[0] if validated else "calibration"
@@ -95,7 +104,8 @@ def main(cutoff_days: int = 30):
     ins.filter(pl.col("insider_sig").fill_null(False)).join(
         mk.select("condition_id", "question"), on="condition_id", how="left").write_parquet(d / "insider.parquet")
     res.write_parquet(d / "definitions.parquet")
-    summary = {"primary": primary, "validated": validated, "cutoff": cutoff.isoformat(), "as_of": now.isoformat(),
+    summary = {"primary": primary, "validated": validated, "integrity_excess": integ["excess_cap_weighted"],
+               "integrity_passed": integ["passed"], "source": "v2/activity trades + v2/resolutions", "cutoff": cutoff.isoformat(), "as_of": now.isoformat(),
                "wallets_scored": cur.height, "smart_wallets": int(cur["smart"].sum()),
                "screener_markets": scr.height, "positions": pos.height, "events": pos["event_id"].n_unique()}
     (d / "summary.json").write_text(json.dumps(summary, indent=1))

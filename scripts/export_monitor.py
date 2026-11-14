@@ -188,6 +188,35 @@ def main(out_path: str | None = None) -> Path:
     T["recon_window"] = [{"wallets": len(st.get("wallets", [])), "b0": st.get("b0"), "b1": (summ or {}).get("b1"),
                           "status": "complete" if summ else "running"}]
 
+    # ---- screener + smart-money model (scripts/fetch_smartmoney.py, fetch_activity.py, build_screener.py)
+    sd = s.data_dir / "smartmoney"
+    if (sd / "summary.json").exists():
+        summ_sm = json.loads((sd / "summary.json").read_text())
+        T["sm_summary"] = [{"key": "model", **{k: v for k, v in summ_sm.items() if not isinstance(v, list)},
+                            "validated": ", ".join(summ_sm.get("validated") or []) or "none"}]
+        T["sm_definitions"] = _rows(pl.read_parquet(sd / "definitions.parquet"))
+        T["sm_calibration"] = _rows(pl.read_parquet(sd / "calibration.parquet"))
+        scr = pl.read_parquet(sd / "screener.parquet")
+        scr = scr.with_columns(
+            screen=pl.concat_str([
+                pl.when(pl.col("near_res")).then(pl.lit("Near resolution")).otherwise(pl.lit("")),
+                pl.when(pl.col("smart_lean").is_not_null() & (pl.col("smart_lean") != "split"))
+                .then(pl.lit("Top-scored wallets lean ") + pl.col("smart_lean")).otherwise(pl.lit("")),
+                pl.when(pl.col("insider_flags") > 0).then(pl.lit("Fresh-wallet size")).otherwise(pl.lit("")),
+            ], separator=" · ").str.strip_chars(" ·").str.replace_all(r"( · )+", " · "))
+        T["screener"] = _rows(scr.filter(pl.col("hours_left") > 0).sort("volume_24h", descending=True, nulls_last=True)
+                              .head(400).drop("condition_id"))
+        ws = pl.read_parquet(sd / "wallet_scores.parquet")
+        prim = summ_sm["primary"]
+        T["sm_wallets"] = _rows(ws.filter(pl.col("smart")).sort(prim, descending=True).head(25)
+                                .select("wallet", "events", "capital", "pnl", "roi", "roi_ex_best", prim,
+                                        "calibration", "is_mm").rename({prim: "score"}))
+        if (sd / "insider.parquet").exists():
+            ins = pl.read_parquet(sd / "insider.parquet")
+            if ins.height:
+                T["insider"] = _rows(ins.sort("current_value", descending=True).head(30)
+                                     .select("question", "proxy_wallet", "pseudonym", "outcome_index", "amount",
+                                             "avg_price", "current_value", "age_days", "trades"))
     out = Path(out_path or s.data_dir / "monitor" / "monitor.json")
     out.parent.mkdir(parents=True, exist_ok=True)
     payload = {"generated_at": datetime.now(timezone.utc).isoformat(), "tables": T,

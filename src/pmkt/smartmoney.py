@@ -160,3 +160,46 @@ def maker_share(fills: pl.DataFrame) -> pl.DataFrame:
 
 def safe(x):
     return None if x is None or (isinstance(x, float) and (math.isnan(x) or math.isinf(x))) else x
+
+
+def trades_to_positions(trades: pl.DataFrame, resolutions: pl.DataFrame) -> pl.DataFrame:
+    """One row per resolved TRADE, in the positions schema used by score()/walk_forward().
+
+    A BUY of outcome i at price q is a bet on i: p = q, x = payout_i.
+    A SELL of outcome i at q is a bet on the complement: p = 1 - q, x = 1 - payout_i.
+    Unbiased by redemption behaviour: losing trades are kept whether or not anyone redeemed.
+    Dependence cluster: the event (event_slug), else the condition.
+    """
+    r = (resolutions.filter((pl.col("status") == "resolved") & pl.col("payouts").is_not_null())
+         .with_columns(t_res=pl.col("resolved_at").str.to_datetime(strict=False, time_zone="UTC"),
+                       pay0=pl.col("payouts").list.get(0, null_on_oob=True).cast(pl.Float64) / 1e6,
+                       pay1=pl.col("payouts").list.get(1, null_on_oob=True).cast(pl.Float64) / 1e6)
+         .select("condition_id", "t_res", "pay0", "pay1", "was_disputed"))
+    t = trades.filter(pl.col("price").is_between(0.01, 0.99, closed="none") & (pl.col("size") > 0)) \
+        .join(r, on="condition_id", how="inner")
+    xi = pl.when(pl.col("outcome_index") == 0).then(pl.col("pay0")).otherwise(pl.col("pay1"))
+    buy = pl.col("side") == "BUY"
+    t = t.with_columns(
+        p=pl.when(buy).then(pl.col("price")).otherwise(1 - pl.col("price")).cast(pl.Float64),
+        x=pl.when(buy).then(xi).otherwise(1 - xi),
+        n=pl.col("size").cast(pl.Float64),
+        t_entry=pl.from_epoch(pl.col("timestamp").cast(pl.Int64), time_unit="s").dt.replace_time_zone("UTC"),
+    ).filter(pl.col("x").is_not_null())
+    t = t.with_columns(e=pl.col("x") - pl.col("p"), cap=pl.col("n") * pl.col("p"),
+                       event_id=pl.coalesce("event_slug", "condition_id"))
+    return t.with_columns(pnl=pl.col("n") * pl.col("e"), binary=(pl.col("x") <= 0.02) | (pl.col("x") >= 0.98),
+                          t_out=pl.col("t_res"), status=pl.lit("TRADE"), title=pl.col("title")) \
+        .filter(pl.col("cap") >= 1.0).select(
+            "wallet", "token_id", "condition_id", "event_id", "title", "p", "n", "cap", "pnl", "e", "x", "binary",
+            "t_entry", "t_out", "status", "side", "was_disputed")
+
+
+def integrity(pos: pl.DataFrame, max_abs_excess: float = 0.02) -> dict:
+    """Population calibration check. Across a broad sample, wins should track entry prices (excess ~0, minus
+    favourite-longshot effects). A large positive excess means the data drops losers: refuse to score."""
+    b = (pos.with_columns(bucket=(pl.col("p") * 10).floor() / 10)
+         .group_by("bucket").agg(n=pl.len(), win=pl.col("x").mean(), p=pl.col("p").mean())
+         .with_columns(excess=pl.col("win") - pl.col("p")).sort("bucket"))
+    excess = float((pos["e"] * pos["cap"]).sum() / pos["cap"].sum())
+    return {"excess_cap_weighted": excess, "excess_equal": float(pos["e"].mean()), "passed": abs(excess) <= max_abs_excess,
+            "buckets": b}
