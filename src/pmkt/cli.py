@@ -76,6 +76,24 @@ def _holders_once(s, a):
     print(f"{df.height} holder rows for {m.height} markets")
 
 
+def cmd_book(s, a):
+    """Window position book for wallets from the indexed lake (fills + transfers + lifecycle)."""
+    from . import ledger, lifecycle
+    con = storage.connect(s.data_dir)
+    wl = ",".join(f"'{w.lower()}'" for w in a.wallet)
+    fills = storage.query(con, f"select * from chain_fills where wallet in ({wl})")
+    tr = storage.query(con, f"select * from chain_transfers where from_addr in ({wl}) or to_addr in ({wl})")
+    lc = storage.query(con, f"select * from chain_lifecycle where tx_hash in (select tx_hash from chain_transfers "
+                            f"where from_addr in ({wl}) or to_addr in ({wl}))")
+    prot = list(s["chain"]["exclude_from_holders"]) + list(lifecycle.registry()["contracts"].values())
+    led = ledger.build_ledger(fills, tr, lc, {w.lower() for w in a.wallet}, prot)
+    book, flags = ledger.replay(led)
+    print(led.group_by("kind").len().sort("len", descending=True))
+    print(book.frame().sort("cost_basis", descending=True))
+    if flags:
+        print("flags:", {f: flags.count(f) for f in set(flags)})
+
+
 def cmd_status(s, a):
     con = storage.connect(s.data_dir)
     views = [r[0] for r in con.execute("SELECT view_name FROM duckdb_views() WHERE NOT internal").fetchall()]
@@ -113,13 +131,15 @@ def main(argv=None):
     h.add_argument("--top", type=int, default=50)
     h.add_argument("--every", type=float, default=0, help="repeat every N minutes")
     sp.add_parser("status")
+    bk = sp.add_parser("book", help="window position book from fills+transfers+lifecycle")
+    bk.add_argument("wallet", nargs="+")
     a = p.parse_args(argv)
     logging.basicConfig(level=logging.DEBUG if a.verbose else logging.INFO,
                         format="%(asctime)s %(levelname)s %(name)s: %(message)s", stream=sys.stderr)
     logging.getLogger("httpx").setLevel(logging.WARNING)
     s = load_settings(a.config)
     {"gamma": cmd_gamma, "record": cmd_record, "chain": cmd_chain, "holders": cmd_holders,
-     "status": cmd_status}[a.cmd](s, a)
+     "status": cmd_status, "book": cmd_book}[a.cmd](s, a)
 
 
 if __name__ == "__main__":

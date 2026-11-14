@@ -1,4 +1,7 @@
-"""Wallet position book from on-chain fills (our ledger of record).
+"""Wallet position book from on-chain fills ONLY (fast approximation).
+
+Superseded for anything that needs correct balances by `pmkt.ledger` (fills + ERC-1155 transfers +
+split/merge/redeem/convert/migration, with basis carry). Kept for quick trade-level analytics.
 
 Accounting: average-cost per (wallet, token).
   BUY  q @ p, fee f : pos += q ; cost += q*p + f
