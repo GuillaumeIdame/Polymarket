@@ -167,6 +167,8 @@ def trades_to_positions(trades: pl.DataFrame, resolutions: pl.DataFrame) -> pl.D
 
     A BUY of outcome i at price q is a bet on i: p = q, x = payout_i.
     A SELL of outcome i at q is a bet on the complement: p = 1 - q, x = 1 - payout_i.
+    t_out is null when the resolution time is unknown (payout backfilled from Gamma): such trades never enter a
+    point-in-time score (t_out < T is false) but do count as test outcomes.
     Unbiased by redemption behaviour: losing trades are kept whether or not anyone redeemed.
     Dependence cluster: the event (event_slug), else the condition.
     """

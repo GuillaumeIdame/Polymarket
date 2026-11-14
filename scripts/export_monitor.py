@@ -217,6 +217,20 @@ def main(out_path: str | None = None) -> Path:
                 T["insider"] = _rows(ins.sort("current_value", descending=True).head(30)
                                      .select("question", "proxy_wallet", "pseudonym", "outcome_index", "amount",
                                              "avg_price", "current_value", "age_days", "trades"))
+    # ---- playbook (knowledge base) claims tested: scripts/test_kb_hypotheses.py
+    if (sd / "kb_hypotheses.parquet").exists():
+        kh = pl.read_parquet(sd / "kb_hypotheses.parquet")
+        keep = [c for c in ["hypothesis", "wallets", "test_events", "spearman", "p_value", "top_q_edge", "top_q_net",
+                            "bottom_q_edge", "note"] if c in kh.columns]
+        T["kb_tests"] = _rows(kh.select(keep).with_columns(key=pl.col("hypothesis").str.extract(r"^(\S+)", 1)))
+        sims = pl.read_parquet(sd / "kb_copy_sims.parquet")
+        T["kb_sims"] = _rows(sims.group_by("selection").agg(
+            wallets=pl.len(), median_final=pl.col("final").median(), p25=pl.col("final").quantile(0.25),
+            p75=pl.col("final").quantile(0.75), mean_final=pl.col("final").mean(),
+            mean_ex_best=pl.col("final").sort().head(pl.len() - 1).mean(), best=pl.col("final").max(),
+            share_profitable=(pl.col("ret") > 0).mean(), median_drawdown=pl.col("max_drawdown").median())
+            .sort("median_final", descending=True))
+        T["kb_categories"] = _rows(pl.read_parquet(sd / "kb_categories.parquet"))
     out = Path(out_path or s.data_dir / "monitor" / "monitor.json")
     out.parent.mkdir(parents=True, exist_ok=True)
     payload = {"generated_at": datetime.now(timezone.utc).isoformat(), "tables": T,

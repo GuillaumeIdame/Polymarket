@@ -121,6 +121,32 @@
     </div>
   </section>
 
+  <section id="playbook">
+    <h2>Playbook claims, tested</h2>
+    <p class="muted">Claims from an external Polymarket copytrading playbook, turned into hypotheses and tested walk-forward on the same unbiased trade sample: wallets scored before the cutoff, judged on trades entered after it.</p>
+    <div class="card" id="kb-sims">
+      <h3>$400 copy portfolios after fees, spread, delay and capital lock-up</h3>
+      <div class="chart" data-draw="sim_chart" data-source="kb_sims" style="min-height:220px"></div>
+      <p class="muted">Bars span the middle half of wallets copied (25th to 75th percentile of final capital); the dot is the median. Each portfolio follows one wallet's trades with 5% of free cash per trade, paying 2c of spread and slippage plus the taker fee, with stakes locked until the market resolves.</p>
+      <div class="tw">
+        <table data-source="kb_sims" data-row-key="selection" aria-label="Copy simulation results">
+          <thead><tr><th data-field="selection">How wallets were chosen</th><th class="n" data-field="wallets">Wallets</th><th class="n" data-field="median_final">Median</th><th class="n" data-field="share_profitable">Profitable</th><th class="n" data-field="mean_final">Mean</th><th class="n" data-field="mean_ex_best">Mean ex best</th><th class="n" data-field="best">Best</th></tr></thead>
+          <tbody data-draw="sim_rows"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card" id="kb-tests">
+      <h3>Does the selection predict later performance?</h3>
+      <div class="tw">
+        <table data-source="kb_tests" data-row-key="hypothesis" aria-label="Playbook hypotheses">
+          <thead><tr><th data-field="hypothesis">Hypothesis</th><th class="n" data-field="wallets">Wallets</th><th class="n" data-field="spearman">Rank corr.</th><th class="n" data-field="p_value">p</th><th class="n" data-field="top_q_edge">Top fifth edge</th><th class="n" data-field="top_q_net">Net of copy costs</th></tr></thead>
+          <tbody data-draw="kb_rows"></tbody>
+        </table>
+      </div>
+      <p class="muted">Specialization makes skill more persistent, most of all in esports, but no selection clears copy costs. The fresh-wallet test had no qualifying trades in this sample. Verified separately: 15-minute and 4-hour BTC Up/Down settle on a Chainlink 60-second TWAP, the daily market on a single Binance 1-minute close.</p>
+    </div>
+  </section>
+
   <section id="reconciliation">
     <h2>Ledger reconciliation</h2>
     <p class="lede" id="recon-lede">The event-sourced wallet ledger matches on-chain balances for
@@ -292,6 +318,9 @@ dash.loader('sm_defs', { description: 'Takes the walk-forward test of each defin
 dash.loader('sm_calib', { description: 'Takes the calibration buckets from the monitor export.', fn: ({ answer }) => ({ data: answer.tables.sm_calibration || [], columns: Object.keys((answer.tables.sm_calibration || [])[0] || {}), meta: answer.meta }) });
 dash.loader('sm_wallets', { description: 'Takes the top-scored wallets from the monitor export.', fn: ({ answer }) => ({ data: answer.tables.sm_wallets || [], columns: Object.keys((answer.tables.sm_wallets || [])[0] || {}), meta: answer.meta }) });
 dash.loader('insider', { description: 'Takes insider-signature alerts from the monitor export.', fn: ({ answer }) => ({ data: answer.tables.insider || [], columns: Object.keys((answer.tables.insider || [])[0] || {}), meta: answer.meta }) });
+
+dash.loader('kb_tests', { description: 'Takes the playbook hypothesis tests from the monitor export.', fn: ({ answer }) => ({ data: answer.tables.kb_tests || [], columns: Object.keys((answer.tables.kb_tests || [])[0] || {}), meta: answer.meta }) });
+dash.loader('kb_sims', { description: 'Takes the $400 copy simulation summary from the monitor export.', fn: ({ answer }) => ({ data: answer.tables.kb_sims || [], columns: Object.keys((answer.tables.kb_sims || [])[0] || {}), meta: answer.meta }) });
 
 // ---- calculations readers can inspect
 dash.calc('flow_totals', {
@@ -549,6 +578,7 @@ dash.draw('cal_chart', (el) => {
       `Avg price ${d3.format('.3f')(r.p)}`, `Won ${d3.format('.1%')(r.win)}`, `${d3.format(',')(r.n)} trades`]))
     .on('pointerleave', () => tip(null));
 });
+window.pmTipLite = pmTipLite;
 function pmTipLite(box) {
   let t = box.querySelector('.tip');
   if (!t) { t = document.createElement('div'); t.className = 'tip'; t.hidden = true; box.append(t); }
@@ -561,4 +591,37 @@ function pmTipLite(box) {
     t.style.top = Math.max(0, ev.clientY - b.top - 40) + 'px';
   };
 }
+</script>
+
+<script>
+const F3 = window.pmFmt, R3 = window.pmRows;
+const c3 = (v) => v == null ? '—' : (v < 0 ? '−' : '+') + d3.format('.1f')(Math.abs(100 * v)) + 'c';
+const usd0 = (v) => '$' + d3.format(',.0f')(v);
+dash.draw('sim_rows', (tb) => R3(tb, 'kb_sims', [['selection'], ['wallets', F3.int, 'n'], ['median_final', usd0, 'n'],
+  ['share_profitable', d3.format('.0%'), 'n'], ['mean_final', usd0, 'n'], ['mean_ex_best', usd0, 'n'], ['best', usd0, 'n']], { key: 'selection' }));
+dash.draw('kb_rows', (tb) => R3(tb, 'kb_tests', [['hypothesis'], ['wallets', F3.int, 'n'],
+  ['spearman', (v) => v == null ? '—' : d3.format('+.3f')(v), 'n'], ['p_value', (v) => v == null ? '—' : d3.format('.3f')(v), 'n'],
+  ['top_q_edge', c3, 'n'], ['top_q_net', c3, 'n']], { key: 'hypothesis' }));
+dash.draw('sim_chart', (el) => {
+  const d = dash.data('kb_sims');
+  el.replaceChildren();
+  if (d.status !== 'ok') { el.textContent = d.status === 'error' ? 'Failed to load' : '—'; return; }
+  const rows = d.data, W = el.clientWidth || 320, rowH = 40, m = { t: 8, r: 16, b: 26, l: 8 }, H = rows.length * rowH + m.t + m.b;
+  const hi = Math.max(450, d3.max(rows, (r) => r.p75) || 450);
+  const x = d3.scaleLinear().domain([0, hi]).nice().range([m.l, W - m.r]);
+  const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img')
+    .attr('aria-label', 'Final capital of $400 copy portfolios by selection method: interquartile range and median, against the $400 start');
+  svg.append('g').attr('transform', `translate(0,${H - m.b})`).call(d3.axisBottom(x).ticks(Math.max(3, Math.floor(W / 90))).tickFormat((v) => '$' + v))
+    .call((g) => g.selectAll('line,path').style('stroke', 'var(--cds-chart-axis)'));
+  svg.append('line').attr('x1', x(400)).attr('x2', x(400)).attr('y1', m.t).attr('y2', H - m.b).style('stroke', 'var(--cds-chart-reference)').style('stroke-dasharray', '4 3');
+  svg.append('text').attr('x', x(400) + 4).attr('y', m.t + 10).text('$400 start');
+  const tip = window.pmTipLite(el);
+  const g = svg.selectAll('g.s').data(rows).join('g').attr('class', 's').attr('transform', (r, i) => `translate(0,${m.t + i * rowH})`);
+  g.append('text').attr('x', m.l).attr('y', 11).text((r) => r.selection);
+  g.append('rect').attr('x', (r) => x(r.p25)).attr('y', 18).attr('height', 10).attr('rx', 2).attr('width', (r) => Math.max(2, x(r.p75) - x(r.p25)))
+    .style('fill', dash.colors[0]).style('opacity', 0.35);
+  g.append('circle').attr('cx', (r) => x(r.median_final)).attr('cy', 23).attr('r', 5).style('fill', dash.colors[0])
+    .on('pointermove', (ev, r) => tip(ev, [r.selection, `Median ${usd0(r.median_final)}`, `Middle half ${usd0(r.p25)}–${usd0(r.p75)}`, `${d3.format('.0%')(r.share_profitable)} of ${r.wallets} wallets profitable`]))
+    .on('pointerleave', () => tip(null));
+});
 </script>
