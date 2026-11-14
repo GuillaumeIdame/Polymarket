@@ -63,25 +63,42 @@ def api_positions(http: Http, wallet: str, max_rows: int = 400) -> list[dict] | 
             "realized_pnl", "status", "first_entry_at", "last_event_at")
     seen, out = set(), []
     for status in ("OPEN", "REDEEMABLE", "REDEEMABLE_LOST", "MERGEABLE"):
-        body = http.get(f"{API}/positions", {"user": wallet, "limit": 500, "status": status})
-        if (body.get("pagination") or {}).get("has_more"):
-            return None
-        for r in body.get("data") or []:
-            if r["token_id"] not in seen:
-                seen.add(r["token_id"])
-                out.append({"wallet": wallet, **{k: r.get(k) for k in keep}})
-        if len(out) > max_rows:
-            return None
+        # include_archived: positions on archived markets are otherwise silently omitted (found 2026-11-14)
+        params: dict = {"user": wallet, "limit": 500, "status": status, "include_archived": "true"}
+        while True:
+            body = http.get(f"{API}/positions", params)
+            for r in body.get("data") or []:
+                if r["token_id"] not in seen:
+                    seen.add(r["token_id"])
+                    out.append({"wallet": wallet, **{k: r.get(k) for k in keep}})
+            if len(out) > max_rows:
+                return None                      # open phase: skip mega-books
+            cur = (body.get("pagination") or {}).get("next_cursor")
+            if not cur:
+                break
+            params["cursor"] = cur               # close phase: page through everything
     return out
 
 
-def _fetch_wallet(args):
+def api_closed(http: Http, wallet: str, condition_ids: list[str]) -> list[dict]:
+    """CLOSED positions (fully exited: sold / redeemed / merged) for specific conditions."""
+    keep = ("token_id", "condition_id", "current_size", "avg_price", "total_cost_usdc", "entry_cost_usdc",
+            "realized_pnl", "status", "first_entry_at", "last_event_at")
+    out = []
+    for i in range(0, len(condition_ids), 20):
+        params = {"user": wallet, "limit": 500, "status": "CLOSED", "condition": ",".join(condition_ids[i:i + 20])}
+        out += [{"wallet": wallet, **{k: r.get(k) for k in keep}}
+                for r in http.paginate_v2(f"{API}/positions", params, 20)]
+    return out
+
+
+def _fetch_wallet(args, max_rows: int = 400):
     """Bracket the API read with chain heads: positions reflect state somewhere in [start, end]."""
     s, wl = args
     http = Http(min_interval_s=0.05)
     rpc = chain.Rpc(http, s.endpoint("polygon_rpc"))
     start = rpc.head()
-    rows = api_positions(http, wl)
+    rows = api_positions(http, wl, max_rows)
     end = rpc.head()
     return wl, rows, start, end
 
@@ -116,39 +133,73 @@ def do_open(s, n_wallets: int):
 
 
 def do_close(s):
+    from concurrent.futures import ThreadPoolExecutor
+
     from pmkt import ledger
     http, out = Http(), s.data_dir / "recon"
     st = json.loads((out / "state.json").read_text())
-    b0, wallets, fetch = st["b0"], st["wallets"], st["fetch"]
-    lo = min(v["start"] for v in fetch.values())
+    b0, wallets, fetch0 = st["b0"], st["wallets"], st["fetch"]
+    lo = min(v["start"] for v in fetch0.values())
     rpc = chain.Rpc(http, s.endpoint("polygon_rpc"))
+    # 1) closing API book, bracketed per wallet (no size cap now: we must see every position)
+    with ThreadPoolExecutor(8) as ex:
+        res = list(ex.map(lambda w: _fetch_wallet((s, w), max_rows=10**6), wallets))
+    fetch1 = {w: {"start": a, "end": b} for w, _, a, b in res}
+    api1 = pl.DataFrame([x for _, rows, _, _ in res for x in (rows or [])], infer_schema_length=None)
+    # 2) index to B1, 3) read balances at B1 at once (public node keeps ~128 blocks of state)
     b1 = rpc.head() - s["chain"]["confirmations"]
     for stream in ("fills", "transfers", "lifecycle"):
         print(chain.index_stream(s, http, stream, from_block=lo, to_block=b1))
-    api1 = pl.DataFrame([r for w in wallets for r in (api_positions(http, w, 10**6) or [])], infer_schema_length=None)
     con = storage.connect(s.data_dir)
     wl = ",".join(f"'{w}'" for w in wallets)
     win = f"block_number >= {lo} and block_number <= {b1}"
-    fills = storage.query(con, f"select * from chain_fills where {win} and wallet in ({wl})")
     tr = storage.query(con, f"select * from chain_transfers where {win} and (from_addr in ({wl}) or to_addr in ({wl}))")
+    api0 = pl.read_parquet(out / "api_t0.parquet")
+    ws = set(wallets)
+    pairs = sorted({(r["wallet"], r["token_id"]) for r in api0.iter_rows(named=True)}
+                   | {(a, t) for a, t in tr.select("to_addr", "token_id").iter_rows() if a in ws}
+                   | {(a, t) for a, t in tr.select("from_addr", "token_id").iter_rows() if a in ws})
+    t_bal = time.time()
+    bal1 = chain_balances(rpc, pairs, b1)
+    print(f"B1={b1}: read {len(pairs)} balances in {time.time() - t_bal:.0f}s (head now {rpc.head()})")
+    fills = storage.query(con, f"select * from chain_fills where {win} and wallet in ({wl})")
     lc = storage.query(con, f"select * from chain_lifecycle where {win} and tx_hash in "
                             f"(select distinct tx_hash from chain_transfers where {win} and "
                             f"(from_addr in ({wl}) or to_addr in ({wl})))")
-    api0 = pl.read_parquet(out / "api_t0.parquet")
-    pairs = sorted({(r["wallet"], r["token_id"]) for r in api0.iter_rows(named=True)}
-                   | {(r["wallet"], r["token_id"]) for r in api1.iter_rows(named=True)}
-                   | {(a, t) for a, t in tr.select("to_addr", "token_id").iter_rows() if a in set(wallets)}
-                   | {(a, t) for a, t in tr.select("from_addr", "token_id").iter_rows() if a in set(wallets)})
-    bal1 = chain_balances(rpc, pairs, b1)
     bal0 = pl.read_parquet(out / "chain_b0.parquet")
     api1.write_parquet(out / "api_t1.parquet")
     bal1.write_parquet(out / "chain_b1.parquet")
-
     excl = list(s["chain"]["exclude_from_holders"]) + list(lifecycle.registry()["contracts"].values())
-    winners = set(api0.filter(pl.col("status") == "REDEEMABLE")["token_id"].to_list())
-    led = ledger.build_ledger(fills, tr, lc, wallets=set(wallets), protocol=excl, winners=winners)
+    # NB: the API's REDEEMABLE status includes losing positions, so it is not a winners list.
+    # ground-truth redeem cash: collateral paid to the wallet in each tx that burns its tokens
+    burn_txs = sorted(set(tr.filter(pl.col("from_addr").is_in(wallets))["tx_hash"].to_list())
+                      - set(fills["tx_hash"].to_list()))
+    t_r = time.time()
+    coll = chain.collateral_received(chain.Rpc(Http(min_interval_s=0.02), s.endpoint("polygon_rpc")), burn_txs, ws)
+    print(f"collateral from {len(burn_txs)} receipts in {time.time() - t_r:.0f}s")
+    led = ledger.build_ledger(fills, tr, lc, wallets=ws, protocol=excl, winners=None, collateral_in=coll,
+                              split_alloc="equal")
     led.write_parquet(out / "ledger.parquet")
-    rep = ledger.reconcile_window(led, api0, api1, bal0, bal1, b0, fetch)
+    # fully exited positions drop out of the open statuses: fetch them as CLOSED, by condition
+    have = {(r["wallet"], r["token_id"]) for r in api1.iter_rows(named=True)}
+    missing = led.filter(~pl.col("token_id").str.starts_with("__")).select("wallet", "token_id").unique()
+    missing = [(w, t) for w, t in missing.iter_rows() if (w, t) not in have and not lifecycle.is_v2_position_id(t)]
+    tok_cond: dict[str, str] = {r["token_id"]: r["condition_id"] for r in api0.iter_rows(named=True)}
+    for t in {t for _, t in missing if t not in tok_cond}:
+        d = http.get(f"{API}/tokens", {"token_id": t}).get("data") or []
+        d = d[0] if isinstance(d, list) and d else d
+        if isinstance(d, dict) and d.get("condition_id"):
+            tok_cond[t] = d["condition_id"]
+    by_w: dict[str, set] = {}
+    for w, t in missing:
+        if t in tok_cond:
+            by_w.setdefault(w, set()).add(tok_cond[t])
+    closed = [r for w, cs in by_w.items() for r in api_closed(http, w, sorted(cs))]
+    if closed:
+        api1 = pl.concat([api1, pl.DataFrame(closed, infer_schema_length=None)], how="diagonal_relaxed") \
+            .unique(subset=["wallet", "token_id"], keep="first")
+    print(f"closed positions fetched: {len(closed)} for {len(missing)} exited pairs")
+    rep = ledger.reconcile_window(led, api0, api1, bal0, bal1, b0, fetch0, fetch1)
     for k, v in rep["summary"].items():
         print(f"{k}: {v}")
     for name, df in rep["frames"].items():

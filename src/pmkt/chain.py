@@ -221,3 +221,34 @@ def detect_gaps(con, dataset: str = "chain_fills") -> pl.DataFrame:
         SELECT block_number - d AS gap_start, block_number AS gap_end, d AS blocks
         FROM g WHERE d > 30 ORDER BY d DESC
     """)
+
+
+COLLATERAL_TOKENS = {
+    "0xc011a7e12a19f7b1f670d46f03b03f3342e82dfb",  # pUSD (Polymarket v2 collateral)
+    "0x2791bca1f2de4661ed88a30c99a7a9449aa84174",  # USDC.e (bridged; CTF collateral)
+    "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",  # USDC (native)
+}
+SIG_ERC20_TRANSFER = topic0("Transfer(address,address,uint256)")
+
+
+def collateral_received(rpc: Rpc, txs: list[str], wallets: set[str], workers: int = 8) -> dict[tuple[str, str], float]:
+    """(tx, wallet) -> net collateral received in that tx, from receipts (ERC-20 Transfer of pUSD/USDC)."""
+    from concurrent.futures import ThreadPoolExecutor
+    out: dict[tuple[str, str], float] = {}
+
+    def one(tx):
+        rc = rpc.call("eth_getTransactionReceipt", [tx])
+        res = {}
+        for lg in rc["logs"]:
+            if lg["address"].lower() in COLLATERAL_TOKENS and lg["topics"][0] == SIG_ERC20_TRANSFER \
+                    and len(lg["topics"]) == 3:
+                frm, to, amt = _addr(lg["topics"][1]), _addr(lg["topics"][2]), int(lg["data"], 16) / DEC
+                if to in wallets:
+                    res[(tx, to)] = res.get((tx, to), 0.0) + amt
+                if frm in wallets:
+                    res[(tx, frm)] = res.get((tx, frm), 0.0) - amt
+        return res
+    with ThreadPoolExecutor(workers) as ex:
+        for r in ex.map(one, txs):
+            out.update(r)
+    return out

@@ -67,15 +67,16 @@ def test_split_then_sell_leg_total_pnl_invariant():
 
 
 def test_merge_and_redeem():
-    led, get, _ = run(seed=[(W, "Y", 100, 0.6), (W, "N", 100, 0.3)],
+    # redeem burns Y 60 + N 50 and pays 60 -> the only subset summing to 60 is {Y}: Y won
+    led, get, _ = run(seed=[(W, "Y", 100, 0.6), (W, "N", 90, 0.3)],
                       transfers=[T("m", 1, W, Z, "Y", 40), T("m", 1, W, Z, "N", 40, li=1),
-                                 T("r", 2, W, Z, "Y", 60), T("r", 2, W, Z, "N", 60, li=1)],
+                                 T("r", 2, W, Z, "Y", 60), T("r", 2, W, Z, "N", 50, li=1)],
                       events=[E("m", 1, "PositionsMerge", W, amount=40.0),
-                              E("r", 2, "PayoutRedemption", W, payout=60.0)], winners={"Y"})
+                              E("r", 2, "PayoutRedemption", W, payout=60.0)])
     y, n = get(W, "Y"), get(W, "N")
     # merge 40 pairs for 40 collateral (equal alloc 20/20): Y realises 40*(0.5-0.6)=-4, N 40*(0.5-0.3)=+8
-    # redeem: Y wins 60 -> +60 - 36 = +24 ; N loses -> 0 - 18 = -18
-    assert abs(y["realized_pnl"] - 20) < 1e-9 and abs(n["realized_pnl"] - (-10)) < 1e-9
+    # redeem: Y wins 60 -> +60 - 36 = +24 ; N loses -> 0 - 15 = -15
+    assert abs(y["realized_pnl"] - 20) < 1e-9 and abs(n["realized_pnl"] - (-7)) < 1e-9
     assert y["position"] == 0 and n["position"] == 0
 
 
@@ -108,3 +109,29 @@ def test_negrisk_convert_carries_net_basis():
     assert {"CONVERT_OUT", "CONVERT_IN", "CONVERT_CASH"} <= set(led["kind"])
     assert abs(get(W, "YES3")["avg_entry"] - 0.6) < 1e-12          # (16 - 10) / 10
     assert abs(get(W, "NO1")["realized_pnl"]) < 1e-12
+
+
+def test_redeem_from_collateral_receipt_and_ambiguity():
+    tr = [T("r", 1, W, X, "A", 5), T("r", 1, W, X, "B", 3, li=1), T("r", 1, W, X, "C", 0.0, li=2)]
+    led = ledger.build_ledger(pl.DataFrame([], schema=FILL_SCHEMA), pl.DataFrame(tr, schema=TRANSFER_SCHEMA),
+                              pl.DataFrame([E("r", 1, "PayoutRedemption", X, payout=8.0)], schema=LIFECYCLE_SCHEMA),
+                              {W}, [X], collateral_in={("r", W): 3.0})
+    cash = dict(led.select("token_id", "cash").iter_rows())
+    assert cash == {"A": 0.0, "B": 3.0}                         # B (3 shares) is the only subset paying 3
+    led2 = ledger.build_ledger(pl.DataFrame([], schema=FILL_SCHEMA),
+                               pl.DataFrame([T("r", 1, W, X, "A", 5), T("r", 1, W, X, "B", 5, li=1)], schema=TRANSFER_SCHEMA),
+                               pl.DataFrame([E("r", 1, "PayoutRedemption", X, payout=5.0)], schema=LIFECYCLE_SCHEMA),
+                               {W}, [X], collateral_in={("r", W): 5.0})
+    assert set(led2["flag"]) == {"redeem_winner_ambiguous"} and abs(led2["cash"].sum() - 5.0) < 1e-12
+
+
+def test_fee_mode_realized_matches_data_api_convention():
+    _, get, _ = run(fills=[F("t", 1, W, "BUY", "Y", 10, 0.48, fee=0.1748)], transfers=[T("t", 1, EX, W, "Y", 10)])
+    b = ledger.Book(fee_mode="realized")
+    led = ledger.build_ledger(pl.DataFrame([F("t", 1, W, "BUY", "Y", 10, 0.48, fee=0.1748)], schema=FILL_SCHEMA),
+                              pl.DataFrame([T("t", 1, EX, W, "Y", 10)], schema=TRANSFER_SCHEMA),
+                              pl.DataFrame([], schema=LIFECYCLE_SCHEMA), {W}, [EX])
+    b, _ = ledger.replay(led, b)
+    r = b.frame().row(0, named=True)
+    assert abs(r["avg_entry"] - 0.48) < 1e-12 and abs(r["realized_pnl"] + 0.1748) < 1e-12
+    assert abs(get(W, "Y")["avg_entry"] - 0.49748) < 1e-12           # default: fee in basis

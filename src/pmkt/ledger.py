@@ -87,8 +87,25 @@ class RefPrice:
         return prices[i] if i >= 0 else None
 
 
+def _winning_subset(qs: dict[str, float], total: float, tol: float = 1e-3) -> set[str] | None:
+    """The unique set of burned tokens whose shares add up to the collateral paid (a winner pays 1/share).
+    None if no subset fits or several do (e.g. YES 5 + NO 5 burned for 5: the payout can't say which won)."""
+    from itertools import combinations
+    toks = list(qs)
+    if len(toks) > 8:
+        return None
+    hits = [set(c) for k in range(len(toks) + 1) for c in combinations(toks, k)
+            if abs(sum(qs[t] for t in c) - total) <= tol * max(1.0, total)]
+    return hits[0] if len(hits) == 1 else None
+
+
 def build_ledger(fills: pl.DataFrame, transfers: pl.DataFrame, lifecycle: pl.DataFrame, wallets: set[str],
-                 protocol: list[str], winners: set[str] | None = None) -> pl.DataFrame:
+                 protocol: list[str], winners: set[str] | None = None,
+                 collateral_in: dict[tuple[str, str], float] | None = None,
+                 split_alloc: str = "ref") -> pl.DataFrame:
+    """collateral_in[(tx, wallet)] = pUSD/USDC received in that tx (from receipts): ground truth for redeems.
+    split_alloc: "ref" (prevailing price) or "equal" (1/n per outcome, the Data API's convention)."""
+    collateral_in = collateral_in or {}
     wallets = {w.lower() for w in wallets}
     prot = {p.lower() for p in protocol} | {ZERO}
     fills = fills.unique(subset=["tx_hash", "log_index"])
@@ -190,11 +207,15 @@ def build_ledger(fills: pl.DataFrame, transfers: pl.DataFrame, lifecycle: pl.Dat
         prot_ins = {t: q for t, q in ins.items() if is_prot(cps[t], tx)}
         if prot_outs and (names | txn) & REDEEM_EVENTS:
             own = sum((x["payout"] or 0.0) for x in ev_rows if x["event"] in REDEEM_EVENTS)
+            total = own if own else collateral_in.get((tx, w))
+            win = _winning_subset(prot_outs, total) if total is not None else None
             for t, q in prot_outs.items():
-                if winners is not None and (t in winners or own == 0):
-                    cash, flag = (q if t in winners else 0.0), None
-                elif len(prot_outs) == 1 and own:
-                    cash, flag = own, None
+                if win is not None:
+                    cash, flag = (q if t in win else 0.0), None
+                elif total is not None:  # wallet total exact; per-outcome attribution unknown
+                    cash, flag = total * q / sum(prot_outs.values()), "redeem_winner_ambiguous"
+                elif winners is not None:
+                    cash, flag = (q if t in winners else 0.0), "redeem_from_winners_hint"
                 else:
                     cash, flag = q * round(ref.get(t) or 0.0), "redeem_fraction_from_price"
                 add(tx, w, t, "REDEEM", -q, cash=cash, cp=cps[t], flag=flag)
@@ -208,7 +229,7 @@ def build_ledger(fills: pl.DataFrame, transfers: pl.DataFrame, lifecycle: pl.Dat
                 outs.pop(t)
         if prot_ins and (names | txn) & SPLIT_EVENTS:
             sets = min(prot_ins.values()) if len(prot_ins) >= 2 else None
-            alloc = _alloc(list(prot_ins), prot_ins, sets, ref) if sets else \
+            alloc = (_alloc(list(prot_ins), prot_ins, sets, {} if split_alloc == "equal" else ref)) if sets else \
                 {t: q * (ref.get(t) or 0.5) for t, q in prot_ins.items()}
             for t, q in prot_ins.items():
                 add(tx, w, t, "SPLIT", q, cash=-alloc[t], cp=cps[t], flag=None if sets else "partial_split")
@@ -225,7 +246,10 @@ def build_ledger(fills: pl.DataFrame, transfers: pl.DataFrame, lifecycle: pl.Dat
 class Book:
     """Average-cost book with basis carry. Seed with an opening book, then apply ledger events."""
 
-    def __init__(self):
+    def __init__(self, fee_mode: str = "basis"):
+        """fee_mode "basis": taker fees go into cost basis (avg incl. fees).
+        "realized": fees are an immediate realised loss and avg excludes them (Data API v2 convention)."""
+        self.fee_mode = fee_mode
         self.st = defaultdict(lambda: {"pos": 0.0, "cost": 0.0, "realized": 0.0, "fees": 0.0})
 
     def seed(self, wallet, token, size, avg, realized=0.0):
@@ -275,6 +299,9 @@ class Book:
             if e["kind"] in ("BUY", "SPLIT"):
                 cost = -e["cash"]
                 s["fees"] += e["fee"]
+                if self.fee_mode == "realized" and e["fee"]:
+                    cost -= e["fee"]
+                    s["realized"] -= e["fee"]
             elif e["carry_key"] in pool and pool_q[e["carry_key"]] > EPS:
                 cost = pool[e["carry_key"]] * e["delta"] / in_q[e["carry_key"]]
             else:  # no carried basis: point-in-time reference price stored in cash by build_ledger
@@ -294,8 +321,9 @@ class Book:
                                     "realized_pnl": pl.Float64, "fees": pl.Float64})
 
 
-def replay(ledger: pl.DataFrame, book: Book | None = None, ref: dict[str, float] | None = None) -> tuple[Book, list]:
-    book = book or Book()
+def replay(ledger: pl.DataFrame, book: Book | None = None, ref: dict[str, float] | None = None,
+           fee_mode: str = "basis") -> tuple[Book, list]:
+    book = book or Book(fee_mode)
     ref = ref or {}
     flags = []
     led = ledger.sort(["block_number", "ord", "tx_hash"], nulls_last=True)
@@ -305,13 +333,14 @@ def replay(ledger: pl.DataFrame, book: Book | None = None, ref: dict[str, float]
 
 
 def reconcile_window(led: pl.DataFrame, api0: pl.DataFrame, api1: pl.DataFrame, bal0: pl.DataFrame,
-                     bal1: pl.DataFrame, b0: int, fetch: dict[str, dict], tol_size: float = 1e-3) -> dict:
+                     bal1: pl.DataFrame, b0: int, fetch: dict[str, dict], fetch1: dict[str, dict] | None = None,
+                     tol_size: float = 1e-3) -> dict:
     """Three checks:
       Q  chain quantities : balanceOf(B0) + sum(ledger deltas in (B0,B1]) == balanceOf(B1)
       C  classification   : share of ledger rows by kind, flags
-      A  Data API         : seed each wallet with API@T0 (taken in [start_w,end_w]), replay (end_w, B1],
-                            compare size / avg_price / realized_pnl with API@T1. Pairs touched inside the
-                            fetch bracket are ambiguous and excluded.
+      A  Data API         : seed each wallet with API@T0 (read inside blocks [start0_w, end0_w]), replay
+                            (end0_w, start1_w), compare size / avg_price / realized_pnl with API@T1 (read inside
+                            [start1_w, end1_w]). Pairs touched inside either bracket are ambiguous and excluded.
     """
     led = led.filter(pl.col("kind") != "CONVERT_CASH")
     # Q
@@ -320,20 +349,28 @@ def reconcile_window(led: pl.DataFrame, api0: pl.DataFrame, api1: pl.DataFrame, 
          .join(d, on=["wallet", "token_id"], how="left")
          .with_columns(pl.col("b0", "balance", "delta").fill_null(0.0))
          .with_columns(err=pl.col("b0") + pl.col("delta") - pl.col("balance")))
+    opened = set(map(tuple, bal0.select("wallet", "token_id").rows()))
+    q = q.with_columns(opening_read=pl.struct("wallet", "token_id").map_elements(
+        lambda r: (r["wallet"], r["token_id"]) in opened, return_dtype=pl.Boolean))
     touched = q.filter(pl.col("delta").abs() > EPS)
-    q_ok = touched.filter(pl.col("err").abs() <= tol_size)
+    verifiable = touched.filter(pl.col("opening_read"))
+    q_ok = verifiable.filter(pl.col("err").abs() <= tol_size)
+    unread = touched.filter(~pl.col("opening_read"))
 
     # A
     ref = {}
     ambiguous = set()
     keep = []
+    fetch1 = fetch1 or {}
     for w, br in fetch.items():
         lw = led.filter(pl.col("wallet") == w)
-        amb = lw.filter((pl.col("block_number") >= br["start"]) & (pl.col("block_number") <= br["end"]))
+        br1 = fetch1.get(w, {"start": 10**12, "end": 10**12})
+        amb = lw.filter(pl.col("block_number").is_between(br["start"], br["end"])
+                        | pl.col("block_number").is_between(br1["start"], br1["end"]))
         ambiguous |= {(w, t) for t in amb["token_id"].to_list()}
-        keep.append(lw.filter(pl.col("block_number") > br["end"]))
+        keep.append(lw.filter((pl.col("block_number") > br["end"]) & (pl.col("block_number") < br1["start"])))
     led_a = pl.concat(keep) if keep else led.clear()
-    book = Book()
+    book = Book(fee_mode="realized")      # compare under the Data API's own conventions
     for r in api0.iter_rows(named=True):
         book.seed(r["wallet"], r["token_id"], r["current_size"] or 0.0, r["avg_price"] or 0.0,
                   r["realized_pnl"] or 0.0)
@@ -341,6 +378,8 @@ def reconcile_window(led: pl.DataFrame, api0: pl.DataFrame, api1: pl.DataFrame, 
     ours = book.frame()
     a1 = api1.select("wallet", "token_id", api_size="current_size", api_avg="avg_price",
                      api_realized="realized_pnl", api_status="status")
+    led_a = led_a.filter(~pl.col("token_id").map_elements(lambda t: t.isdigit() and (int(t) >> 248) == 3,
+                                                           return_dtype=pl.Boolean))
     act = led_a.group_by("wallet", "token_id").agg(kinds=pl.col("kind").unique().sort().str.join("+"),
                                                     n_events=pl.len())
     cmp = (act.join(ours, on=["wallet", "token_id"], how="left")
@@ -358,7 +397,10 @@ def reconcile_window(led: pl.DataFrame, api0: pl.DataFrame, api1: pl.DataFrame, 
                .sort("n", descending=True))
     summary = {
         "Q_pairs_with_activity": touched.height,
-        "Q_chain_balance_match": f"{q_ok.height}/{touched.height}",
+        "Q_chain_balance_match": f"{q_ok.height}/{verifiable.height}",
+        "Q_opening_not_read": unread.height,
+        "Q_opening_not_read_v2": int(unread["token_id"].map_elements(
+            lambda t: (int(t) >> 248) in (1, 2, 3), return_dtype=pl.Boolean).sum()) if unread.height else 0,
         "C_ledger_rows_by_kind": dict(led.group_by("kind").len().iter_rows()),
         "C_flags": dict(led.filter(pl.col("flag").is_not_null()).group_by("flag").len().iter_rows()),
         "A_pairs_compared": cmp.height,
