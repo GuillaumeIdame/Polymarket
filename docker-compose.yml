@@ -1,0 +1,27 @@
+# Phase 1 always-on stack. Run on a small VPS (2 vCPU / 4 GB / 200 GB disk is enough to start):
+#   docker compose up -d --build
+# Data lands in ./data (Parquet lake). Back it up / sync to object storage daily.
+x-common: &common
+  build: .
+  restart: unless-stopped
+  volumes: ["./data:/data", "./config:/app/config:ro"]
+  environment:
+    PMKT_POLYGON_RPC_URL: ${PMKT_POLYGON_RPC_URL:-https://polygon-bor-rpc.publicnode.com}
+  logging: {driver: json-file, options: {max-size: "20m", max-file: "5"}}
+
+services:
+  recorder:          # L2 + trades websocket archive (the irreplaceable dataset)
+    <<: *common
+    command: ["record", "--minutes", "0", "--refresh", "30"]
+  chain-fills:       # OrderFilled on CTF / NegRisk / V3 exchanges, ~1 pass per minute
+    <<: *common
+    command: ["chain", "fills", "--follow", "60"]
+  chain-transfers:   # ERC-1155 transfers (CTF + PositionManager)
+    <<: *common
+    command: ["chain", "transfers", "--follow", "60"]
+  holders:           # top-holder snapshots with entry/PnL, hourly
+    <<: *common
+    command: ["holders", "--top", "200", "--every", "60"]
+  gamma:             # slim market snapshot hourly (full snapshot: add a daily `gamma --full` cron)
+    <<: *common
+    entrypoint: ["sh", "-c", "while true; do pmkt gamma; sleep 3600; done"]

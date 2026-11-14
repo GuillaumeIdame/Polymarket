@@ -1,0 +1,67 @@
+# All endpoints/addresses verified against docs.polymarket.com and live responses on 2026-11-14.
+# Re-verify before changing anything here: Protocol V2 rolls out from 2026-11-23.
+
+data_dir: data            # root of the immutable raw layer (Parquet, hive-partitioned)
+
+endpoints:
+  gamma: https://gamma-api.polymarket.com
+  clob: https://clob.polymarket.com
+  data_api: https://data-api.polymarket.com/v2      # v1 retired 2026-11-02 (HTTP 410)
+  ws_market: wss://ws-subscriptions-clob.polymarket.com/ws/market
+  polygon_rpc: https://polygon-bor-rpc.publicnode.com   # public; swap for a keyed provider in prod
+
+http:
+  timeout_s: 30
+  max_retries: 5
+  min_interval_s: 0.12     # client-side throttle per host
+
+recorder:
+  ping_interval_s: 10      # docs: send text "PING" every 10s
+  assets_per_connection: 200
+  flush_every_s: 60
+  flush_every_rows: 50000
+  custom_feature_enabled: true   # best_bid_ask, new_market, market_resolved
+  # Universe selection (Gamma). Recorded set = union of the filters below.
+  universe:
+    min_volume_24h: 50000
+    max_markets: 400
+    include_tag_slugs: [economy, macro-indicators, fed, fomc, fed-rates, inflation, cpi, cpi-release, us-cpi, gdp, jobs, unemployment, Global-Rates, treasuries, ecb, boe, boj]
+    tagged_share: 0.4             # reserved slots for tagged (macro) markets
+    tagged_min_volume_24h: 1000
+    resolving_within_hours: 72
+
+chain:
+  chain_id: 137
+  blocks_per_request: 200        # ~20k logs/200 blocks on CTF exchange; keep responses < public RPC caps
+  confirmations: 5               # lag behind head to avoid reorgs
+  contracts:
+    # name: [address, kind]
+    ctf_exchange:      ["0xE111180000d2663C0091e4f400237545B87B996B", exchange]
+    negrisk_exchange:  ["0xe2222d279d744050d28e00520010520000310F59", exchange]
+    v2_exchange_v3:    ["0xe3333700cA9d93003F00f0F71f8515005F6c00Aa", exchange]
+    conditional_tokens: ["0x4D97DCd97eC945f40cF65F87097ACe5EA0476045", erc1155]
+    position_manager_v2: ["0x006F54F7f9A22e0000CC2AB60031000000ae9fEF", erc1155]
+  exclude_from_holders:          # protocol contracts that custody tokens transiently
+    - "0xE111180000d2663C0091e4f400237545B87B996B"
+    - "0xe2222d279d744050d28e00520010520000310F59"
+    - "0xe3333700cA9d93003F00f0F71f8515005F6c00Aa"
+    - "0xd91E80cF2E7be2e162c6513ceD06f1dD0dA35296"
+    - "0x12121212006e4CD160D18e3f00711DA5c3372600"
+    - "0xa1200000d0002264C9a1698e001292D00E1b00af"
+    - "0xAdA100Db00Ca00073811820692005400218FcE1f"
+    - "0xadA2005600Dec949baf300f4C6120000bDB6eAab"
+
+# Taker fee: fee = C * rate * p * (1-p); makers pay 0. Source: docs.polymarket.com/trading/fees (2026-11-14).
+# Per-market truth is Gamma `feeSchedule`; this table is the fallback only.
+fees_fallback:
+  crypto: 0.07
+  sports: 0.05
+  finance: 0.04
+  politics: 0.04
+  economics: 0.05
+  culture: 0.05
+  weather: 0.05
+  mentions: 0.04
+  tech: 0.04
+  geopolitics: 0.0
+  other: 0.05
