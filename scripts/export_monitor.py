@@ -147,7 +147,7 @@ def main(out_path: str | None = None) -> Path:
     if (rd / "api_t0.parquet").exists():
         a0, b0 = pl.read_parquet(rd / "api_t0.parquet"), pl.read_parquet(rd / "chain_b0.parquet")
         j = a0.join(b0, on=["wallet", "token_id"])
-        rec.append({"stage": "Opening", "check": "API size equals on-chain balance at B0",
+        rec.append({"key": "opening", "stage": "Opening", "check": "API size equals on-chain balance at the start",
                     "matched": j.filter((pl.col("current_size") - pl.col("balance")).abs() < 1e-4).height,
                     "total": j.height})
     summ = json.loads((rd / "summary.json").read_text()) if (rd / "summary.json").exists() else None
@@ -155,32 +155,32 @@ def main(out_path: str | None = None) -> Path:
         def frac(key):
             m, t = (int(x) for x in str(summ[key]).split("/"))
             return m, t
-        for key, stage, label in [
-                ("Q_chain_balance_match", "Quantities", "Opening + ledger equals on-chain balance at close"),
-                ("A_v_size", "Data API", "Position size equals the API"),
-                ("A_v_avg", "Data API", "Average entry equals the API (within 0.001)"),
-                ("A_v_realized_within_fee", "Data API", "Realised PnL equals the API, allowing for fee treatment"),
-                ("A_v_realized_exact", "Data API", "Realised PnL equals the API exactly (within 1c + 0.1%)"),
-                ("A_v_wallets_within_fee", "Data API", "Wallet window PnL equals the API (0.5% + fees)")]:
+        for key, rk, stage, label in [
+                ("Q_chain_balance_match", "chain", "Quantities", "Opening + ledger equals on-chain balance at close"),
+                ("A_v_size", "size", "Data API", "Position size equals the API"),
+                ("A_v_avg", "avg", "Data API", "Average entry equals the API (within 0.001)"),
+                ("A_v_realized_within_fee", "pnl_fee", "Data API", "Realised PnL equals the API, allowing for fee treatment"),
+                ("A_v_realized_exact", "pnl_exact", "Data API", "Realised PnL equals the API exactly (within 1c + 0.1%)"),
+                ("A_v_wallets_within_fee", "wallets", "Data API", "Wallet window PnL equals the API (0.5% + fees)")]:
             m, t = frac(key)
-            rec.append({"stage": stage, "check": label, "matched": m, "total": t})
+            rec.append({"key": rk, "stage": stage, "check": label, "matched": m, "total": t})
         unread_zero = summ.get("Q_unread_zero_opening", 0)
         unread = summ.get("Q_opening_not_read", 0)
-        rec.append({"stage": "Quantities", "check": "New positions consistent with a zero opening balance",
+        rec.append({"key": "new", "stage": "Quantities", "check": "New positions consistent with a zero opening balance",
                     "matched": unread_zero, "total": unread})
         T["recon_gaps"] = [
-            {"gap": "Positions on archived markets missing from the opening snapshot",
+            {"key": "archived", "gap": "Positions on archived markets missing from the opening snapshot",
              "pairs": summ.get("A_pairs_opening_gap"), "pnl_effect_usd": summ.get("A_gap_pnl_diff"),
              "cause": "Data API omits archived markets unless include_archived=true", "status": "fixed for next run"},
-            {"gap": "V2 combo positions not listed by /v2/positions",
+            {"key": "combos", "gap": "V2 combo positions not listed by /v2/positions",
              "pairs": summ.get("Q_opening_not_read_v2"), "pnl_effect_usd": None,
              "cause": "Combos live on /v2/positions/combos; chain ledger covers them", "status": "excluded from API check"},
-            {"gap": "Redeems where the payout can't say which outcome won",
+            {"key": "ambiguous", "gap": "Redeems where the payout can't say which outcome won",
              "pairs": summ["C_flags"].get("redeem_winner_ambiguous", 0), "pnl_effect_usd": None,
              "cause": "Equal-sized legs burned; wallet total exact, per-outcome split proportional",
              "status": "needs resolution events"},
         ]
-        T["recon_pnl"] = [{"scope": "Verified pairs, all wallets", "ours_usd": summ.get("A_v_pnl_ours"),
+        T["recon_pnl"] = [{"key": "verified", "scope": "Verified pairs, all wallets", "ours_usd": summ.get("A_v_pnl_ours"),
                            "api_usd": summ.get("A_v_pnl_api")}]
         T["ledger_mix"] = _rows(pl.DataFrame([{"kind": k, "rows": v} for k, v in summ["C_ledger_rows_by_kind"].items()])
                                 .sort("rows", descending=True))
