@@ -35,3 +35,21 @@ Message flow by category (5 min): crypto 60%, sports 34%, politics 3%, economics
 4. Re-run the V2 checks on the first binary V2 markets (11-23 08:30 ET crypto Up/Down): fills vs Data API,
    PositionManager balances vs `/v2/positions`, `ConditionResolved` vs Gamma resolution.
 5. Phase 2: holders/positions dashboard + wallet scoring (all smart-money definitions) on the walk-forward split.
+
+## Smart-money model & expiry screener (2026-11-14)
+
+**v1 (killed):** built on /v2/positions history. Every definition "validated" (top fifth +11c/share net), but the
+sample itself showed +6.7c to +11.6c excess win per share: the API drops losing positions on inactive markets.
+**v2:** /v2/activity trades (losers included) + /v2/resolutions payouts; 1,600 wallets (random holders + random on-chain
+traders), 60 days, 1.41M resolved trades, 95.7k events. Sample bias check: +0.85c (passes the 2c gate).
+
+| Definition | Rank corr. out of sample | p (BH) | Top fifth net of copy costs | Verdict |
+|---|---|---|---|---|
+| PnL skill | +0.17 | <0.001 | -2.1c | predictive, not tradable |
+| Calibration | +0.06 | 0.25 | -3.4c | not predictive |
+| Longshot | -0.06 | 0.27 | -4.4c | not predictive |
+| Conviction | +0.03 | 0.47 | -3.2c | not predictive |
+
+**No copy-trading edge.** PnL skill persists and is usable as an adverse-selection filter / alert feature.
+Screener: 1,500 highest-volume markets ending within 72h (cap), 317 near resolution, 11 with insider-signature holders.
+Smart positioning covers almost no screener markets yet: only 68 wallets qualify; scoring all ~18k holders needs the server.

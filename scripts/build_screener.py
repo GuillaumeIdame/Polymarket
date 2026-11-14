@@ -49,7 +49,14 @@ def main(cutoff_days: int = 30):
     ok = res.clear() if not integ["passed"] else res.filter((pl.col("spearman") > 0) & (pl.col("p_bh") < 0.05) & (pl.col("top_q_net") > 0)) \
         if "p_bh" in res.columns else res.clear()
     validated = ok.sort("spearman", descending=True)["definition"].to_list()
-    primary = validated[0] if validated else "calibration"
+    predictive = (res.filter((pl.col("spearman") > 0) & (pl.col("p_bh") < 0.05)).sort("spearman", descending=True)
+                  ["definition"].to_list() if integ["passed"] and "p_bh" in res.columns else [])
+    primary = (validated or predictive or ["calibration"])[0]
+    verdict = ("tradable after copy costs" if validated else
+               "predictive, not tradable after copy costs" if predictive else "not predictive")
+    res = res.with_columns(verdict=pl.when(pl.col("definition").is_in(validated)).then(pl.lit("tradable"))
+                           .when(pl.col("definition").is_in(predictive)).then(pl.lit("predictive, not tradable"))
+                           .otherwise(pl.lit("not predictive")))
 
     # ---- current scores (all resolved history up to now) + labels
     cur = sm.score(pos, now)
@@ -104,7 +111,7 @@ def main(cutoff_days: int = 30):
     ins.filter(pl.col("insider_sig").fill_null(False)).join(
         mk.select("condition_id", "question"), on="condition_id", how="left").write_parquet(d / "insider.parquet")
     res.write_parquet(d / "definitions.parquet")
-    summary = {"primary": primary, "validated": validated, "integrity_excess": integ["excess_cap_weighted"],
+    summary = {"primary": primary, "verdict": verdict, "validated": validated, "predictive": predictive, "integrity_excess": integ["excess_cap_weighted"],
                "integrity_passed": integ["passed"], "source": "v2/activity trades + v2/resolutions", "cutoff": cutoff.isoformat(), "as_of": now.isoformat(),
                "wallets_scored": cur.height, "smart_wallets": int(cur["smart"].sum()),
                "screener_markets": scr.height, "positions": pos.height, "events": pos["event_id"].n_unique()}
