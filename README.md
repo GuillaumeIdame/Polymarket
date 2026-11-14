@@ -10,7 +10,9 @@ src/pmkt/
   gamma.py              market/event snapshots (keyset paging), recorder universe
   recorder.py           CLOB websocket L2/trade archive (multi-conn, PING, reconnect, gap log)
   book.py               L2 book reconstruction from the archive
-  chain.py              Polygon OrderFilled + ERC-1155 indexer (resumable cursor, gap detection)
+  chain.py              Polygon OrderFilled + ERC-1155 + lifecycle indexer (resumable cursor, gap detection)
+  lifecycle.py          CTF + Protocol V2 lifecycle/resolution decoding, V2 position-id decoding, CTF->V2 map
+  abi/events.json       event registry (137 events, 45 confirmed live), built by scripts/build_event_registry.py
   dataapi.py            Data API v2: holders (+entry/PnL), positions, trades
   positions.py          wallet position book from fills (avg-cost, point-in-time), reconciliation
   holders.py            concentration (top-N, HHI), holder moves (NEW/ADD/REDUCE/EXIT/FLIP)
@@ -20,7 +22,7 @@ sql/schema.sql          relational layer design (Postgres)
 scripts/validate_book.py  live check: reconstructed books vs REST /book
 ```
 Data lake: `data/raw/{dataset}/dt=YYYY-MM-DD/*.parquet` (git-ignored). Datasets: `gamma_markets`,
-`gamma_markets_full`, `recorder_universe`, `ws_market`, `ws_sessions`, `chain_fills`, `chain_transfers`, `api_holders`.
+`gamma_markets_full`, `recorder_universe`, `ws_market`, `ws_sessions`, `chain_fills`, `chain_transfers`, `chain_lifecycle`, `api_holders`.
 
 ## Quick start
 ```bash
@@ -28,6 +30,7 @@ pip install -e '.[dev]'
 pmkt gamma                      # market snapshot
 pmkt record --minutes 10        # websocket recorder (0 = forever)
 pmkt chain fills --blocks 1800  # last hour of fills, then resumes from cursor
+pmkt chain lifecycle            # split/merge/redeem/migration/resolution (CTF + V2)
 pmkt holders --top 50           # top holders w/ avg entry + PnL
 pmkt status                     # inventory, coverage, gaps
 pytest -q

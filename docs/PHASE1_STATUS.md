@@ -25,11 +25,13 @@ Message flow by category (5 min): crypto 60%, sports 34%, politics 3%, economics
 4. Holders = top 400/outcome (API cap). Share-of-supply needs on-chain supply (not yet computed).
 5. Recorder book check is consistent with timing but not proven at the same timestamp. Next step: compare the book `hash`.
 6. Postgres not deployed. DuckDB over Parquet is the store for now; schema for the relational layer is in `sql/schema.sql`.
-7. Protocol V2 lifecycle events not decoded yet (needed by 2026-11-23).
+7. ~~Protocol V2 lifecycle events not decoded~~ **Done 2026-11-14** (`pmkt chain lifecycle`, 45 live event types,
+   all checks pass; see DATA_SOURCES.md). Not yet folded into the position book (item 2).
 
 ## Next steps (in order)
 1. Deploy `docker compose up -d` on a VPS (≈ $10–20/mo, 200 GB) **this week**, plus daily sync to object storage.
 2. Keyed Polygon RPC (Alchemy/QuickNode) + 90-day fills backfill.
 3. Fold transfers + split/merge/redeem into the position book; reconcile vs `/v2/positions` (target > 99% match).
-4. V2 event decoding + test on the 11-23 crypto markets.
+4. Re-run the V2 checks on the first binary V2 markets (11-23 08:30 ET crypto Up/Down): fills vs Data API,
+   PositionManager balances vs `/v2/positions`, `ConditionResolved` vs Gamma resolution.
 5. Phase 2: holders/positions dashboard + wallet scoring (all smart-money definitions) on the walk-forward split.

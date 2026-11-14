@@ -36,3 +36,6 @@ pythonpath = ["src"]
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "B"]
 ignore = ["E501"]
+
+[tool.setuptools.package-data]
+pmkt = ["abi/*.json"]

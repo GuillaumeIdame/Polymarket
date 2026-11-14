@@ -52,4 +52,29 @@ Per-market truth: Gamma `feeSchedule {rate, exponent, takerOnly, rebateRate}`.
 | 2 | Tue 2026-11-24 | BTC/ETH Up/Down 5m/15m/4h; other crypto, weather, commodities, finance, minor sports |
 | 3 | Tue 2026-12-01 | Soccer, NFL/CFB, basketball, tennis, esports |
 
-The pipeline already indexes ExchangeV3 and PositionManager and selects asset ids by `version`. **To do before 11-23:** decode V2 lifecycle events (split/merge/redeem/migration) and verify that V2 fills price/size identically.
+The pipeline indexes ExchangeV3 and PositionManager, selects asset ids by `version`, and decodes all V2 lifecycle events (below).
+
+## Lifecycle & resolution events (CTF + V2): verified 2026-11-14
+
+Registry: `src/pmkt/abi/events.json` (137 events), built by `scripts/build_event_registry.py` from
+`github.com/Polymarket/polymarket-v2-external` @ `741f8bb` (2026-09-24): compiled ABIs for CTF/NegRiskAdapter/UMA,
+parsed Solidity for V2 (UDVTs: `ConditionId=bytes31`, `EventId=bytes29`, `PositionId=uint256`).
+**All 49 topic0s seen live on the 11 Polymarket contracts match a registry signature** (45 lifecycle + 4 ERC-1155/exchange
+handled elsewhere), so the signatures are confirmed on-chain, not just taken from source. No same-signature/different-indexing ambiguity.
+
+| Check (live data) | Result |
+|---|---|
+| `PositionMigrated.positionId` bit-decodes to the indexed `conditionId` + `outcomeIndex` | 115/115 (40k blocks; binary 103, negrisk 12) |
+| `PositionMigrated.amount` == PositionManager mint to same holder/positionId in same tx | 60/60 |
+| PositionManager token ids that are valid V2 position ids | 1,011/1,011 |
+| CTF token ids misclassified as V2 by `is_v2_position_id` | 0/12,621 |
+| ExchangeV3 fills on V2 ids; CTF exchanges on CTF ids | 1,833/1,833; 0/136,501 |
+| `MigrationResolved.result` == normalised CTF payout (ppm) | 123/123 |
+| ExchangeV3 taker fills vs Data API (price & size) | 38/40 match; the 2 others are combo *mint matches* (BUY vs BUY on complements, prices sum to 1) that the API logs as `SPLIT` with no price. The chain is the more complete record |
+
+Notes:
+- Today all V2 *trading* is **Combos** (CombinatorialModule; taker fee ≈ 247 bps of notional). Binary/neg-risk V2 trading starts 11-23.
+- **Migration is already live**: in one hour 1,761 CTF conditions were registered (`MigrationConditionRegistered`); every one that maps to an open market (1,269) is a **v1 sports** market, i.e. pre-registration ahead of the 12-01 cutover. `lifecycle.condition_map()` gives the authoritative CTF→V2 condition link.
+- CTF `PositionSplit` is dominated by the exchanges themselves as `stakeholder` (mint matches), not user splits.
+- Router and AutoRedeemer events are **context only** (`is_context_only=True`); balances come from ERC-1155 transfers. Never double count.
+- Neg-risk derivation: `RemainingConditionsDerivableAsNo` / `SyntheticConditionDerivableAsYes` must be applied instead of waiting for one `ConditionResolved` per outcome; never derive sibling-NO for migrated conditions (docs).

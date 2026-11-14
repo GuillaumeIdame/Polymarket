@@ -41,6 +41,15 @@ chain:
     v2_exchange_v3:    ["0xe3333700cA9d93003F00f0F71f8515005F6c00Aa", exchange]
     conditional_tokens: ["0x4D97DCd97eC945f40cF65F87097ACe5EA0476045", erc1155]
     position_manager_v2: ["0x006F54F7f9A22e0000CC2AB60031000000ae9fEF", erc1155]
+    # lifecycle / resolution emitters (event registry: src/pmkt/abi/events.json)
+    ctf_lifecycle:        ["0x4D97DCd97eC945f40cF65F87097ACe5EA0476045", lifecycle]
+    negrisk_adapter:      ["0xd91E80cF2E7be2e162c6513ceD06f1dD0dA35296", lifecycle]
+    router_v2:            ["0x12121212006e4CD160D18e3f00711DA5c3372600", lifecycle]
+    binary_module_v2:     ["0x1000008dD9001B968442c1000017eaE6E0dA00Ba", lifecycle]
+    negrisk_module_v2:    ["0x200000900045e3B6259600682756002200028933", lifecycle]
+    combinatorial_module_v2: ["0x30000034706C7d8e12009DAB006Be20000c031A8", lifecycle]
+    auto_redeemer_v2:     ["0xa1200000d0002264C9a1698e001292D00E1b00af", lifecycle]
+    oracle_aggregator_v2: ["0x0A0a0A0A8B00C51b7D810501b03F230028C04a87", lifecycle]
   exclude_from_holders:          # protocol contracts that custody tokens transiently
     - "0xE111180000d2663C0091e4f400237545B87B996B"
     - "0xe2222d279d744050d28e00520010520000310F59"

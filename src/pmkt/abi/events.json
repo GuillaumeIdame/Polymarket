@@ -1,0 +1,3253 @@
+{
+ "source": "github.com/Polymarket/polymarket-v2-external",
+ "commit": "741f8bbe88c3f29a1c55d1248a3dd411f622f111",
+ "contracts": {
+  "conditional_tokens": "0x4D97DCd97eC945f40cF65F87097ACe5EA0476045",
+  "negrisk_adapter": "0xd91E80cF2E7be2e162c6513ceD06f1dD0dA35296",
+  "position_manager_v2": "0x006F54F7f9A22e0000CC2AB60031000000ae9fEF",
+  "router_v2": "0x12121212006e4CD160D18e3f00711DA5c3372600",
+  "binary_module_v2": "0x1000008dD9001B968442c1000017eaE6E0dA00Ba",
+  "negrisk_module_v2": "0x200000900045e3B6259600682756002200028933",
+  "combinatorial_module_v2": "0x30000034706C7d8e12009DAB006Be20000c031A8",
+  "auto_redeemer_v2": "0xa1200000d0002264C9a1698e001292D00E1b00af",
+  "oracle_aggregator_v2": "0x0A0a0A0A8B00C51b7D810501b03F230028C04a87"
+ },
+ "events": {
+  "0x94b241e14651a9658c51a45c82167e4f25ac3d3e7f8a2beae9d10b1ba07a94a0": {
+   "name": "AggregatorSet",
+   "signature": "AggregatorSet(address)",
+   "inputs": [
+    {
+     "name": "aggregator",
+     "type": "address",
+     "indexed": true
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0x0059e11815211969c0c4aaf3f498b52b6c2f2d14f286275d0862d70de22a836b": {
+   "name": "AncillaryDataUpdated",
+   "signature": "AncillaryDataUpdated(bytes32,address,bytes)",
+   "inputs": [
+    {
+     "name": "questionID",
+     "type": "bytes32",
+     "indexed": true
+    },
+    {
+     "name": "owner",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "update",
+     "type": "bytes",
+     "indexed": false
+    }
+   ],
+   "origin": "artifacts/UmaCtfAdapterV31.json",
+   "observed_live": false
+  },
+  "0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925": {
+   "name": "Approval",
+   "signature": "Approval(address,address,uint256)",
+   "inputs": [
+    {
+     "name": "owner",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "spender",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "value",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0x6141166d67d9e01ddaf66f0aa3b4f57290d442fa83745ddf768aa606d0838270": {
+   "name": "ArbitrationTriggered",
+   "signature": "ArbitrationTriggered(bytes32)",
+   "inputs": [
+    {
+     "name": "requestId",
+     "type": "bytes32",
+     "indexed": true
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0xb88d17e2c533909318ad5841d80e7acb1fdf0dbdbcc9fd1c2b8420e00b93f8f8": {
+   "name": "ArbitratorHookFailed",
+   "signature": "ArbitratorHookFailed(bytes32,address)",
+   "inputs": [
+    {
+     "name": "requestId",
+     "type": "bytes32",
+     "indexed": true
+    },
+    {
+     "name": "arbitratorModule",
+     "type": "address",
+     "indexed": true
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0xa159b7e0d335e3dd77d4204ac81d6fa58f27a4d3481f35bcfdfc5d9be250bf14": {
+   "name": "ArbitratorModuleSet",
+   "signature": "ArbitratorModuleSet(bytes29,address)",
+   "inputs": [
+    {
+     "name": "eventId",
+     "type": "bytes29",
+     "indexed": true
+    },
+    {
+     "name": "arbitratorModule",
+     "type": "address",
+     "indexed": true
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0xb434294b5904213c83a167af0068ab82637c6fd4fac945e2abc74ed8d3f4d52a": {
+   "name": "BinaryRedemption",
+   "signature": "BinaryRedemption(address,bytes32,uint256)",
+   "inputs": [
+    {
+     "name": "from",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "conditionId",
+     "type": "bytes32",
+     "indexed": true
+    },
+    {
+     "name": "payout",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": true
+  },
+  "0x1ed5bb2236c7a9cafe14ebd89210c65d8b70df5f2f5573fa486da314d874e67d": {
+   "name": "BridgeCollateralInitiated",
+   "signature": "BridgeCollateralInitiated(address,uint256,bytes32,uint256)",
+   "inputs": [
+    {
+     "name": "initiator",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "dstChain",
+     "type": "uint256",
+     "indexed": true
+    },
+    {
+     "name": "recipient",
+     "type": "bytes32",
+     "indexed": true
+    },
+    {
+     "name": "amount",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0xd310e554d3fd5335d0aca4ef77d4859f65a3e728008329aef6db44ebaf78f1e1": {
+   "name": "BridgePositionMinted",
+   "signature": "BridgePositionMinted(address,uint256,uint256)",
+   "inputs": [
+    {
+     "name": "to",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "positionId",
+     "type": "uint256",
+     "indexed": true
+    },
+    {
+     "name": "amount",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0x06735e2794e58fa40f90f6d752f9a94f47d33c04a1128e995673886ec726c3ae": {
+   "name": "BridgePositionsBurned",
+   "signature": "BridgePositionsBurned(uint256[],uint256[])",
+   "inputs": [
+    {
+     "name": "positionIds",
+     "type": "uint256[]",
+     "indexed": false
+    },
+    {
+     "name": "amounts",
+     "type": "uint256[]",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0xc693a6c48c4d049a3d6d011be529015d577dafcb90c0584a9a89346557854856": {
+   "name": "BridgePositionsInitiated",
+   "signature": "BridgePositionsInitiated(address,uint256,bytes32,uint256[],uint256[])",
+   "inputs": [
+    {
+     "name": "initiator",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "dstChain",
+     "type": "uint256",
+     "indexed": true
+    },
+    {
+     "name": "recipient",
+     "type": "bytes32",
+     "indexed": true
+    },
+    {
+     "name": "positionIds",
+     "type": "uint256[]",
+     "indexed": false
+    },
+    {
+     "name": "amounts",
+     "type": "uint256[]",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0x48bc8a0e6103e5e240bea008de1ad5e3a0165f4f9dca8aeb99d56111394e9a54": {
+   "name": "ChainReceivePauseSet",
+   "signature": "ChainReceivePauseSet(uint256,bool)",
+   "inputs": [
+    {
+     "name": "chain",
+     "type": "uint256",
+     "indexed": true
+    },
+    {
+     "name": "paused",
+     "type": "bool",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0x2ae654f9f82d42905b62302c23a5fa2e13b2875fca29c3f4a37e2664e743d7cb": {
+   "name": "ChainSendPauseSet",
+   "signature": "ChainSendPauseSet(uint256,bool)",
+   "inputs": [
+    {
+     "name": "chain",
+     "type": "uint256",
+     "indexed": true
+    },
+    {
+     "name": "paused",
+     "type": "bool",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0x28c63ccca58aa4e9502f5ccbe5559fd1b1a0f127d1c317bf2901b204a4d2f477": {
+   "name": "CollateralBridged",
+   "signature": "CollateralBridged(bytes32,uint256,address,bytes32,uint256)",
+   "inputs": [
+    {
+     "name": "messageId",
+     "type": "bytes32",
+     "indexed": true
+    },
+    {
+     "name": "dstChain",
+     "type": "uint256",
+     "indexed": true
+    },
+    {
+     "name": "sender",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "recipient",
+     "type": "bytes32",
+     "indexed": false
+    },
+    {
+     "name": "amount",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0x516034546f1db928a4db529135d2e851e21732aa85789b556e662c2e85fb0fab": {
+   "name": "CollateralReceived",
+   "signature": "CollateralReceived(bytes32,address,uint256)",
+   "inputs": [
+    {
+     "name": "messageId",
+     "type": "bytes32",
+     "indexed": true
+    },
+    {
+     "name": "recipient",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "amount",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0xf96012c33cad3242c6e56a0c9a4d003fdf70ca495dff976cff4295e03ffe3b86": {
+   "name": "CombinatorialCollateralReturned",
+   "signature": "CombinatorialCollateralReturned(address,uint256)",
+   "inputs": [
+    {
+     "name": "initiator",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "operationCount",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": true
+  },
+  "0x51c89d7ee51515f7235e928930da7f81be08212bc14870a6a37c64744492db96": {
+   "name": "CombinatorialConditionPrepared",
+   "signature": "CombinatorialConditionPrepared(bytes31,uint256[])",
+   "inputs": [
+    {
+     "name": "conditionId",
+     "type": "bytes31",
+     "indexed": true
+    },
+    {
+     "name": "legs",
+     "type": "uint256[]",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": true
+  },
+  "0x43f975db4a407bc85816b44922ab015dc6b990ead8d39099398c03a258e70bce": {
+   "name": "Compressed",
+   "signature": "Compressed(address,uint256,uint256,address,uint256,uint256,uint256)",
+   "inputs": [
+    {
+     "name": "user",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "oldPositionId",
+     "type": "uint256",
+     "indexed": true
+    },
+    {
+     "name": "newPositionId",
+     "type": "uint256",
+     "indexed": true
+    },
+    {
+     "name": "recipient",
+     "type": "address",
+     "indexed": false
+    },
+    {
+     "name": "amount",
+     "type": "uint256",
+     "indexed": false
+    },
+    {
+     "name": "positionAmount",
+     "type": "uint256",
+     "indexed": false
+    },
+    {
+     "name": "collateralOut",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": true
+  },
+  "0xab3760c3bd2bb38b5bcf54dc79802ed67338b4cf29f3054ded67ed24661e4177": {
+   "name": "ConditionPreparation",
+   "signature": "ConditionPreparation(bytes32,address,bytes32,uint256)",
+   "inputs": [
+    {
+     "name": "conditionId",
+     "type": "bytes32",
+     "indexed": true
+    },
+    {
+     "name": "oracle",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "questionId",
+     "type": "bytes32",
+     "indexed": true
+    },
+    {
+     "name": "outcomeSlotCount",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "artifacts/ConditionalTokens.json",
+   "observed_live": true
+  },
+  "0xb44d84d3289691f71497564b85d4233648d9dbae8cbdbb4329f301c3a0185894": {
+   "name": "ConditionResolution",
+   "signature": "ConditionResolution(bytes32,address,bytes32,uint256,uint256[])",
+   "inputs": [
+    {
+     "name": "conditionId",
+     "type": "bytes32",
+     "indexed": true
+    },
+    {
+     "name": "oracle",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "questionId",
+     "type": "bytes32",
+     "indexed": true
+    },
+    {
+     "name": "outcomeSlotCount",
+     "type": "uint256",
+     "indexed": false
+    },
+    {
+     "name": "payoutNumerators",
+     "type": "uint256[]",
+     "indexed": false
+    }
+   ],
+   "origin": "artifacts/ConditionalTokens.json",
+   "observed_live": true
+  },
+  "0xe560c1a2847d4cf2e66de11fe592605556989449f38cc3ab96e2e287daa68caa": {
+   "name": "ConditionResolved",
+   "signature": "ConditionResolved(bytes31,uint256[])",
+   "inputs": [
+    {
+     "name": "conditionId",
+     "type": "bytes31",
+     "indexed": true
+    },
+    {
+     "name": "result",
+     "type": "uint256[]",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": true
+  },
+  "0x93d226ffc1c7cc4176213b47c5966043f735f6d3c3e5c092fd619ff1fe5d3bd3": {
+   "name": "ConvertedOnEvent",
+   "signature": "ConvertedOnEvent(address,bytes31,bytes29,uint256,address[],uint256)",
+   "inputs": [
+    {
+     "name": "user",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "parentConditionId",
+     "type": "bytes31",
+     "indexed": true
+    },
+    {
+     "name": "eventId",
+     "type": "bytes29",
+     "indexed": true
+    },
+    {
+     "name": "conditionIndex",
+     "type": "uint256",
+     "indexed": false
+    },
+    {
+     "name": "recipients",
+     "type": "address[]",
+     "indexed": false
+    },
+    {
+     "name": "amount",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0x348359e703372b7a9511e430c7e4db280578fb31a773e6c075ef7328cec34da6": {
+   "name": "ConvertedToYesBasket",
+   "signature": "ConvertedToYesBasket(address,bytes31,address[],uint256)",
+   "inputs": [
+    {
+     "name": "user",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "fullConditionId",
+     "type": "bytes31",
+     "indexed": true
+    },
+    {
+     "name": "recipients",
+     "type": "address[]",
+     "indexed": false
+    },
+    {
+     "name": "amount",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": true
+  },
+  "0x26bdfbc198f2d30945bd9a2384cb5d3b97a1cfe249d1538aa803c7fbb79681cb": {
+   "name": "CrossModuleAuthSet",
+   "signature": "CrossModuleAuthSet(address,bool)",
+   "inputs": [
+    {
+     "name": "module",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "authorized",
+     "type": "bool",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0x91141af7218b78df9433c39d00f529b596d801413aa2b11f88434052339e6a6a": {
+   "name": "CtfRouterPositionRedeemed",
+   "signature": "CtfRouterPositionRedeemed(address,uint256,uint256)",
+   "inputs": [
+    {
+     "name": "initiator",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "positionId",
+     "type": "uint256",
+     "indexed": true
+    },
+    {
+     "name": "amount",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0x3f6a3832ba520c501e307011cd38ac177a5684c9ae5fe4316a5535d830569df7": {
+   "name": "CtfRouterPositionSplit",
+   "signature": "CtfRouterPositionSplit(address,bytes31,uint256)",
+   "inputs": [
+    {
+     "name": "initiator",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "conditionId",
+     "type": "bytes31",
+     "indexed": true
+    },
+    {
+     "name": "amount",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0x40668a23978d3d837b3d5bed2219cfb199b07cd1bfa9680a0336cd36f2ada9c1": {
+   "name": "CtfRouterPositionsMerged",
+   "signature": "CtfRouterPositionsMerged(address,bytes31,uint256)",
+   "inputs": [
+    {
+     "name": "initiator",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "conditionId",
+     "type": "bytes31",
+     "indexed": true
+    },
+    {
+     "name": "amount",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0xd54c991263cd8bb37409a5ee463709e8e3e2483ba755f2a6a99ce38a4c1601e6": {
+   "name": "DisputerModuleAdded",
+   "signature": "DisputerModuleAdded(bytes29,address)",
+   "inputs": [
+    {
+     "name": "eventId",
+     "type": "bytes29",
+     "indexed": true
+    },
+    {
+     "name": "module",
+     "type": "address",
+     "indexed": true
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": true
+  },
+  "0x1abf75d24ad7ea6438fcd7eba8023e4ef38b7dcd60b430f7e44fdae9a9283815": {
+   "name": "DisputerModuleRemoved",
+   "signature": "DisputerModuleRemoved(bytes29,address)",
+   "inputs": [
+    {
+     "name": "eventId",
+     "type": "bytes29",
+     "indexed": true
+    },
+    {
+     "name": "module",
+     "type": "address",
+     "indexed": true
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0x9bdf886b29ff2e03765aa003845c79f3700b39f9628db119aeeaac5d0fd73306": {
+   "name": "EventPrepared",
+   "signature": "EventPrepared(bytes29,uint256,bytes32)",
+   "inputs": [
+    {
+     "name": "eventId",
+     "type": "bytes29",
+     "indexed": true
+    },
+    {
+     "name": "conditionCount",
+     "type": "uint256",
+     "indexed": false
+    },
+    {
+     "name": "legacyEventId",
+     "type": "bytes32",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": true
+  },
+  "0x6c14fdbd417e901138c803349c26df1115726b468ebc6142d39f7b9aef7f17fe": {
+   "name": "Extracted",
+   "signature": "Extracted(address,bytes31,bytes31,bytes31,address,address,uint256)",
+   "inputs": [
+    {
+     "name": "user",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "fullConditionId",
+     "type": "bytes31",
+     "indexed": true
+    },
+    {
+     "name": "reducedConditionId",
+     "type": "bytes31",
+     "indexed": false
+    },
+    {
+     "name": "residualConditionId",
+     "type": "bytes31",
+     "indexed": false
+    },
+    {
+     "name": "recipient0",
+     "type": "address",
+     "indexed": false
+    },
+    {
+     "name": "recipient1",
+     "type": "address",
+     "indexed": false
+    },
+    {
+     "name": "amount",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": true
+  },
+  "0xb1d3fd1043ba7e8aa4dc147ae75d3b4d9c9d05e5087cae2e72765ef47d84678f": {
+   "name": "FeedIdUpdated",
+   "signature": "FeedIdUpdated(bytes32,bytes32)",
+   "inputs": [
+    {
+     "name": "assetPair",
+     "type": "bytes32",
+     "indexed": true
+    },
+    {
+     "name": "feedId",
+     "type": "bytes32",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0xae7e76bdf56027b25e2c628816e7fc1528e769899c30cac15868e657d173b452": {
+   "name": "FinalizerSet",
+   "signature": "FinalizerSet(bytes29,address)",
+   "inputs": [
+    {
+     "name": "eventId",
+     "type": "bytes29",
+     "indexed": true
+    },
+    {
+     "name": "finalizer",
+     "type": "address",
+     "indexed": true
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0x971be26fcde2df81b2b63dfb7fa1d2294b524eb1896b10e5228d9c154a30af09": {
+   "name": "GlobalPauseSet",
+   "signature": "GlobalPauseSet(bool)",
+   "inputs": [
+    {
+     "name": "paused",
+     "type": "bool",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0xbfdd473162148936b92fc229a1d66bcded27968d61ec543cbd86b433fd2d7b4b": {
+   "name": "HorizontalMerge",
+   "signature": "HorizontalMerge(address,bytes29,address,uint256)",
+   "inputs": [
+    {
+     "name": "initiator",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "eventId",
+     "type": "bytes29",
+     "indexed": true
+    },
+    {
+     "name": "recipient",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "amount",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0x9dbee20759d31417e9b0d739e07904f87139522ce89cf2f6ad78e299067674ce": {
+   "name": "HorizontalSplit",
+   "signature": "HorizontalSplit(address,bytes29,address,uint256)",
+   "inputs": [
+    {
+     "name": "initiator",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "eventId",
+     "type": "bytes29",
+     "indexed": true
+    },
+    {
+     "name": "recipient",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "amount",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0xbb32ee0762f37f8b1ace698804f2f31be362ada55b233e359de04fefd164819f": {
+   "name": "Injected",
+   "signature": "Injected(address,bytes31,bytes31,bytes31,address,uint256)",
+   "inputs": [
+    {
+     "name": "user",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "fullConditionId",
+     "type": "bytes31",
+     "indexed": true
+    },
+    {
+     "name": "reducedConditionId",
+     "type": "bytes31",
+     "indexed": false
+    },
+    {
+     "name": "residualConditionId",
+     "type": "bytes31",
+     "indexed": false
+    },
+    {
+     "name": "recipient",
+     "type": "address",
+     "indexed": false
+    },
+    {
+     "name": "amount",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0x7a07cc3efaf017520e4ad55e66052f0398632c810a3fab73e58e4c7050746825": {
+   "name": "LegacyCollateralSettled",
+   "signature": "LegacyCollateralSettled(address,address,uint256)",
+   "inputs": [
+    {
+     "name": "legacyToken",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "vault",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "amount",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": true
+  },
+  "0x9e2a844f43a3d18a45e8f1b0440095036c12635d9db49395b30780cf7422a6d9": {
+   "name": "LivenessWindowSet",
+   "signature": "LivenessWindowSet(bytes29,uint32)",
+   "inputs": [
+    {
+     "name": "eventId",
+     "type": "bytes29",
+     "indexed": true
+    },
+    {
+     "name": "livenessWindow",
+     "type": "uint32",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0xc51886d63e98dce9b94e65fdd117981be37c579382c2306e29fbe38a9ad2868b": {
+   "name": "MarketPauseSet",
+   "signature": "MarketPauseSet(bytes29,bool)",
+   "inputs": [
+    {
+     "name": "eventId",
+     "type": "bytes29",
+     "indexed": true
+    },
+    {
+     "name": "paused",
+     "type": "bool",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0xf059ab16d1ca60e123eab60e3c02b68faf060347c701a5d14885a8e1def7b3a8": {
+   "name": "MarketPrepared",
+   "signature": "MarketPrepared(bytes32,address,uint256,bytes)",
+   "inputs": [
+    {
+     "name": "marketId",
+     "type": "bytes32",
+     "indexed": true
+    },
+    {
+     "name": "oracle",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "feeBips",
+     "type": "uint256",
+     "indexed": false
+    },
+    {
+     "name": "data",
+     "type": "bytes",
+     "indexed": false
+    }
+   ],
+   "origin": "artifacts/NegRiskAdapter.json",
+   "observed_live": true
+  },
+  "0x09e4439e8186f011e12eb04a93f9d5477f79e7479375c8108d5e38e234a84ff6": {
+   "name": "MergedFromYesBasket",
+   "signature": "MergedFromYesBasket(address,bytes31,address,uint256)",
+   "inputs": [
+    {
+     "name": "user",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "fullConditionId",
+     "type": "bytes31",
+     "indexed": true
+    },
+    {
+     "name": "recipient",
+     "type": "address",
+     "indexed": false
+    },
+    {
+     "name": "amount",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": true
+  },
+  "0x532e91b101b4cdffc29d79b6ca1f3ae8690d4846c75145039161f4a22c55019a": {
+   "name": "MergedOnCondition",
+   "signature": "MergedOnCondition(address,bytes31,bytes31,bytes31,address,uint256)",
+   "inputs": [
+    {
+     "name": "user",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "parentConditionId",
+     "type": "bytes31",
+     "indexed": true
+    },
+    {
+     "name": "childYesConditionId",
+     "type": "bytes31",
+     "indexed": false
+    },
+    {
+     "name": "childNoConditionId",
+     "type": "bytes31",
+     "indexed": false
+    },
+    {
+     "name": "recipient",
+     "type": "address",
+     "indexed": false
+    },
+    {
+     "name": "amount",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": true
+  },
+  "0xb219258fc090ae084a29f0659e7e2947568de5694939da14181645a55f03f870": {
+   "name": "MergedOnEvent",
+   "signature": "MergedOnEvent(address,bytes31,bytes29,address,uint256)",
+   "inputs": [
+    {
+     "name": "user",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "parentConditionId",
+     "type": "bytes31",
+     "indexed": true
+    },
+    {
+     "name": "eventId",
+     "type": "bytes29",
+     "indexed": true
+    },
+    {
+     "name": "recipient",
+     "type": "address",
+     "indexed": false
+    },
+    {
+     "name": "amount",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0x0da49435dfd3b856758ee0b1a2500f1e8062fed24dd654594af9fa163cc5bcb4": {
+   "name": "MigrationConditionRegistered",
+   "signature": "MigrationConditionRegistered(bytes31,bytes32)",
+   "inputs": [
+    {
+     "name": "v2ConditionId",
+     "type": "bytes31",
+     "indexed": true
+    },
+    {
+     "name": "legacyConditionId",
+     "type": "bytes32",
+     "indexed": true
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": true
+  },
+  "0xf87100968b0fe70751acf87590ffac515231c5b999cba36e6820c7d312dcc8af": {
+   "name": "MigrationResolved",
+   "signature": "MigrationResolved(bytes31,bytes32,uint256,uint256,uint256,uint256)",
+   "inputs": [
+    {
+     "name": "conditionId",
+     "type": "bytes31",
+     "indexed": true
+    },
+    {
+     "name": "legacyConditionId",
+     "type": "bytes32",
+     "indexed": true
+    },
+    {
+     "name": "legacyPayout0",
+     "type": "uint256",
+     "indexed": false
+    },
+    {
+     "name": "legacyPayout1",
+     "type": "uint256",
+     "indexed": false
+    },
+    {
+     "name": "result0",
+     "type": "uint256",
+     "indexed": false
+    },
+    {
+     "name": "result1",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": true
+  },
+  "0xa7839c29a2c3fc5208115d9be22d20b2a981203a3428218dd76c76d690254499": {
+   "name": "ModuleAdded",
+   "signature": "ModuleAdded(uint256,address)",
+   "inputs": [
+    {
+     "name": "moduleId",
+     "type": "uint256",
+     "indexed": true
+    },
+    {
+     "name": "module",
+     "type": "address",
+     "indexed": true
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0x854cff40228579f66eb3dd26b84ef9d8bb9f43b2a6a03495f29fae9b2827d987": {
+   "name": "ModuleRemoved",
+   "signature": "ModuleRemoved(uint256,address)",
+   "inputs": [
+    {
+     "name": "moduleId",
+     "type": "uint256",
+     "indexed": true
+    },
+    {
+     "name": "module",
+     "type": "address",
+     "indexed": true
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0x88d6c8f3c6085cc72c9bf9341d5caf7b7d1d2944dfb368d75e773b63471806e2": {
+   "name": "ModuleSupportedSet",
+   "signature": "ModuleSupportedSet(uint256,uint256,bool)",
+   "inputs": [
+    {
+     "name": "moduleId",
+     "type": "uint256",
+     "indexed": true
+    },
+    {
+     "name": "dstChain",
+     "type": "uint256",
+     "indexed": true
+    },
+    {
+     "name": "supported",
+     "type": "bool",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0x74a51ebefec30281ec6849b727ec7916f9b1a3e5e148d6771d98315215b38b96": {
+   "name": "NegRiskRedemption",
+   "signature": "NegRiskRedemption(address,bytes32,uint256)",
+   "inputs": [
+    {
+     "name": "from",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "conditionId",
+     "type": "bytes32",
+     "indexed": true
+    },
+    {
+     "name": "payout",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": true
+  },
+  "0xf9ffabca9c8276e99321725bcb43fb076a6c66a54b7f21c4e8146d8519b417dc": {
+   "name": "NewAdmin",
+   "signature": "NewAdmin(address,address)",
+   "inputs": [
+    {
+     "name": "admin",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "newAdminAddress",
+     "type": "address",
+     "indexed": true
+    }
+   ],
+   "origin": "artifacts/NegRiskAdapter.json",
+   "observed_live": false
+  },
+  "0xa4f237d18e5dbeb37a898a168eda3563460d4e4a6c8a19a7cec931ccee81c537": {
+   "name": "OOReporterRequestCreated",
+   "signature": "OOReporterRequestCreated(bytes32,bytes32)",
+   "inputs": [
+    {
+     "name": "requestId",
+     "type": "bytes32",
+     "indexed": true
+    },
+    {
+     "name": "identifier",
+     "type": "bytes32",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0xbd38647ecefb296b23744d285f2b49943cf5e86d01de4271390f24f6dde12acf": {
+   "name": "OOReporterResultReported",
+   "signature": "OOReporterResultReported(bytes32,int256,bytes32)",
+   "inputs": [
+    {
+     "name": "requestId",
+     "type": "bytes32",
+     "indexed": true
+    },
+    {
+     "name": "price",
+     "type": "int256",
+     "indexed": false
+    },
+    {
+     "name": "resultHash",
+     "type": "bytes32",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0xf2165347e8cf6cbe46f0d7c9d8cb0a93acfe4fba186d5213bcf03eee7febbd3a": {
+   "name": "OOReporterRulesForwardFailed",
+   "signature": "OOReporterRulesForwardFailed(bytes32,bytes)",
+   "inputs": [
+    {
+     "name": "requestId",
+     "type": "bytes32",
+     "indexed": true
+    },
+    {
+     "name": "reason",
+     "type": "bytes",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0x23edd263567242c6caacfa756e88698d5771b6eb6d83ba42419ff944bc24c8d3": {
+   "name": "OOReporterRulesForwarded",
+   "signature": "OOReporterRulesForwarded(bytes32,bytes)",
+   "inputs": [
+    {
+     "name": "requestId",
+     "type": "bytes32",
+     "indexed": true
+    },
+    {
+     "name": "updatedRules",
+     "type": "bytes",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0xb766aa470f20b094f26a9a14ea5bf63a60af51703c15776e2e739b6a0428adf6": {
+   "name": "OrderPreapprovalInvalidated",
+   "signature": "OrderPreapprovalInvalidated(bytes32)",
+   "inputs": [
+    {
+     "name": "orderHash",
+     "type": "bytes32",
+     "indexed": true
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0xe92c22722d9c284034b6c9f5aaec018edb3e593c0e084900b6b9d390a1182a0b": {
+   "name": "OrderPreapproved",
+   "signature": "OrderPreapproved(bytes32)",
+   "inputs": [
+    {
+     "name": "orderHash",
+     "type": "bytes32",
+     "indexed": true
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0xb8e19bf6c02c74c20cfc00567a3be20e29f089d4ed11da6726011dbbcd2ee787": {
+   "name": "OutcomeProposed",
+   "signature": "OutcomeProposed(bytes32,bytes32,uint256[])",
+   "inputs": [
+    {
+     "name": "requestId",
+     "type": "bytes32",
+     "indexed": true
+    },
+    {
+     "name": "resultHash",
+     "type": "bytes32",
+     "indexed": false
+    },
+    {
+     "name": "result",
+     "type": "uint256[]",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": true
+  },
+  "0x9e9fa7fd355160bd4cd3f22d4333519354beff1f5689bde87f2c5e63d8d484b2": {
+   "name": "OutcomeReported",
+   "signature": "OutcomeReported(bytes32,bytes32,bool)",
+   "inputs": [
+    {
+     "name": "marketId",
+     "type": "bytes32",
+     "indexed": true
+    },
+    {
+     "name": "questionId",
+     "type": "bytes32",
+     "indexed": true
+    },
+    {
+     "name": "outcome",
+     "type": "bool",
+     "indexed": false
+    }
+   ],
+   "origin": "artifacts/NegRiskAdapter.json",
+   "observed_live": true
+  },
+  "0x62e78cea01bee320cd4e420270b5ea74000d11b0c9f74754ebdbfc544b05a258": {
+   "name": "Paused",
+   "signature": "Paused(address)",
+   "inputs": [
+    {
+     "name": "asset",
+     "type": "address",
+     "indexed": true
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0x2682012a4a4f1973119f1c9b90745d1bd91fa2bab387344f044cb3586864d18d": {
+   "name": "PayoutRedemption",
+   "signature": "PayoutRedemption(address,address,bytes32,bytes32,uint256[],uint256)",
+   "inputs": [
+    {
+     "name": "redeemer",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "collateralToken",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "parentCollectionId",
+     "type": "bytes32",
+     "indexed": true
+    },
+    {
+     "name": "conditionId",
+     "type": "bytes32",
+     "indexed": false
+    },
+    {
+     "name": "indexSets",
+     "type": "uint256[]",
+     "indexed": false
+    },
+    {
+     "name": "payout",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "artifacts/ConditionalTokens.json",
+   "observed_live": true
+  },
+  "0x9140a6a270ef945260c03894b3c6b3b2695e9d5101feef0ff24fec960cfd3224": {
+   "name": "PayoutRedemption",
+   "signature": "PayoutRedemption(address,bytes32,uint256[],uint256)",
+   "inputs": [
+    {
+     "name": "redeemer",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "conditionId",
+     "type": "bytes32",
+     "indexed": true
+    },
+    {
+     "name": "amounts",
+     "type": "uint256[]",
+     "indexed": false
+    },
+    {
+     "name": "payout",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "artifacts/NegRiskAdapter.json",
+   "observed_live": true
+  },
+  "0x5a5b03b7b8eeb42578bfc8ee851ac2a7b631e490f1ffc27b78751e8ceb7f46e9": {
+   "name": "PayoutRedemption",
+   "signature": "PayoutRedemption(address,IERC20,bytes32,bytes32,uint256[],uint256)",
+   "inputs": [
+    {
+     "name": "redeemer",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "collateralToken",
+     "type": "IERC20",
+     "indexed": true
+    },
+    {
+     "name": "parentCollectionId",
+     "type": "bytes32",
+     "indexed": true
+    },
+    {
+     "name": "conditionId",
+     "type": "bytes32",
+     "indexed": false
+    },
+    {
+     "name": "indexSets",
+     "type": "uint256[]",
+     "indexed": false
+    },
+    {
+     "name": "payout",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0x91d4c3fec14758a2444d9091d55188dabf0093da924e5a6cd831fa01a0547dc7": {
+   "name": "PeerSet",
+   "signature": "PeerSet(uint256,bytes32)",
+   "inputs": [
+    {
+     "name": "chainSelector",
+     "type": "uint256",
+     "indexed": true
+    },
+    {
+     "name": "peer",
+     "type": "bytes32",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0x975e919c2cacb75b8a9fc78ddf455a5211812df2f388c877c8d3adfe156e2779": {
+   "name": "PositionConverted",
+   "signature": "PositionConverted(address,bytes29,address,uint256,uint256)",
+   "inputs": [
+    {
+     "name": "initiator",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "eventId",
+     "type": "bytes29",
+     "indexed": true
+    },
+    {
+     "name": "recipient",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "conditionIndex",
+     "type": "uint256",
+     "indexed": false
+    },
+    {
+     "name": "amount",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0xe8d329e97d555e1e9d0da49d3b12d41a966458eee02ff4c869e54c6711d7c80b": {
+   "name": "PositionMigrated",
+   "signature": "PositionMigrated(address,bytes31,uint256,uint256,uint256)",
+   "inputs": [
+    {
+     "name": "from",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "conditionId",
+     "type": "bytes31",
+     "indexed": true
+    },
+    {
+     "name": "positionId",
+     "type": "uint256",
+     "indexed": true
+    },
+    {
+     "name": "outcomeIndex",
+     "type": "uint256",
+     "indexed": false
+    },
+    {
+     "name": "amount",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": true
+  },
+  "0xe793c0a0f0b091b43a0b5e919c517f73877d75c70bca0ddfb1db33cfe8fa531b": {
+   "name": "PositionReceived",
+   "signature": "PositionReceived(bytes32,address,uint256,uint256)",
+   "inputs": [
+    {
+     "name": "messageId",
+     "type": "bytes32",
+     "indexed": true
+    },
+    {
+     "name": "recipient",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "positionId",
+     "type": "uint256",
+     "indexed": true
+    },
+    {
+     "name": "amount",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0x4fd474b703f46b453536518b4cbc159dfbea6fd663233763d321a9bc8ccdf97f": {
+   "name": "PositionRedeemed",
+   "signature": "PositionRedeemed(address,uint256,address,uint256,uint256)",
+   "inputs": [
+    {
+     "name": "initiator",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "positionId",
+     "type": "uint256",
+     "indexed": true
+    },
+    {
+     "name": "recipient",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "amount",
+     "type": "uint256",
+     "indexed": false
+    },
+    {
+     "name": "payout",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": true
+  },
+  "0x2e6bb91f8cbcda0c93623c54d0403a43514fabc40084ec96b6d5379a74786298": {
+   "name": "PositionSplit",
+   "signature": "PositionSplit(address,address,bytes32,bytes32,uint256[],uint256)",
+   "inputs": [
+    {
+     "name": "stakeholder",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "collateralToken",
+     "type": "address",
+     "indexed": false
+    },
+    {
+     "name": "parentCollectionId",
+     "type": "bytes32",
+     "indexed": true
+    },
+    {
+     "name": "conditionId",
+     "type": "bytes32",
+     "indexed": true
+    },
+    {
+     "name": "partition",
+     "type": "uint256[]",
+     "indexed": false
+    },
+    {
+     "name": "amount",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "artifacts/ConditionalTokens.json",
+   "observed_live": true
+  },
+  "0xbbed930dbfb7907ae2d60ddf78345610214f26419a0128df39b6cc3d9e5df9b0": {
+   "name": "PositionSplit",
+   "signature": "PositionSplit(address,bytes32,uint256)",
+   "inputs": [
+    {
+     "name": "stakeholder",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "conditionId",
+     "type": "bytes32",
+     "indexed": true
+    },
+    {
+     "name": "amount",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "artifacts/NegRiskAdapter.json",
+   "observed_live": true
+  },
+  "0x9b3f11220f06ab207243e83042a259ea95f6a40eb1296605e530b2de25e50d8f": {
+   "name": "PositionSplit",
+   "signature": "PositionSplit(address,IERC20,bytes32,bytes32,uint256[],uint256)",
+   "inputs": [
+    {
+     "name": "stakeholder",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "collateralToken",
+     "type": "IERC20",
+     "indexed": false
+    },
+    {
+     "name": "parentCollectionId",
+     "type": "bytes32",
+     "indexed": true
+    },
+    {
+     "name": "conditionId",
+     "type": "bytes32",
+     "indexed": true
+    },
+    {
+     "name": "partition",
+     "type": "uint256[]",
+     "indexed": false
+    },
+    {
+     "name": "amount",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0xc6b2787b9775fe2c93887d02dc039c4c7edfab0a8acc1ff6602930a737eb94ae": {
+   "name": "PositionsBridged",
+   "signature": "PositionsBridged(bytes32,uint256,address,bytes32,uint256)",
+   "inputs": [
+    {
+     "name": "messageId",
+     "type": "bytes32",
+     "indexed": true
+    },
+    {
+     "name": "dstChain",
+     "type": "uint256",
+     "indexed": true
+    },
+    {
+     "name": "sender",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "recipient",
+     "type": "bytes32",
+     "indexed": false
+    },
+    {
+     "name": "positionCount",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0xb03d19dddbc72a87e735ff0ea3b57bef133ebe44e1894284916a84044deb367e": {
+   "name": "PositionsConverted",
+   "signature": "PositionsConverted(address,bytes32,uint256,uint256)",
+   "inputs": [
+    {
+     "name": "stakeholder",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "marketId",
+     "type": "bytes32",
+     "indexed": true
+    },
+    {
+     "name": "indexSet",
+     "type": "uint256",
+     "indexed": true
+    },
+    {
+     "name": "amount",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "artifacts/NegRiskAdapter.json",
+   "observed_live": true
+  },
+  "0x6f13ca62553fcc2bcd2372180a43949c1e4cebba603901ede2f4e14f36b282ca": {
+   "name": "PositionsMerge",
+   "signature": "PositionsMerge(address,address,bytes32,bytes32,uint256[],uint256)",
+   "inputs": [
+    {
+     "name": "stakeholder",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "collateralToken",
+     "type": "address",
+     "indexed": false
+    },
+    {
+     "name": "parentCollectionId",
+     "type": "bytes32",
+     "indexed": true
+    },
+    {
+     "name": "conditionId",
+     "type": "bytes32",
+     "indexed": true
+    },
+    {
+     "name": "partition",
+     "type": "uint256[]",
+     "indexed": false
+    },
+    {
+     "name": "amount",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "artifacts/ConditionalTokens.json",
+   "observed_live": true
+  },
+  "0xba33ac50d8894676597e6e35dc09cff59854708b642cd069d21eb9c7ca072a04": {
+   "name": "PositionsMerge",
+   "signature": "PositionsMerge(address,bytes32,uint256)",
+   "inputs": [
+    {
+     "name": "stakeholder",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "conditionId",
+     "type": "bytes32",
+     "indexed": true
+    },
+    {
+     "name": "amount",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "artifacts/NegRiskAdapter.json",
+   "observed_live": true
+  },
+  "0xccdbd40b7f248edfcd83a27758c03f40d1662ac138333e3582968f9934f6555d": {
+   "name": "PositionsMerge",
+   "signature": "PositionsMerge(address,IERC20,bytes32,bytes32,uint256[],uint256)",
+   "inputs": [
+    {
+     "name": "stakeholder",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "collateralToken",
+     "type": "IERC20",
+     "indexed": false
+    },
+    {
+     "name": "parentCollectionId",
+     "type": "bytes32",
+     "indexed": true
+    },
+    {
+     "name": "conditionId",
+     "type": "bytes32",
+     "indexed": true
+    },
+    {
+     "name": "partition",
+     "type": "uint256[]",
+     "indexed": false
+    },
+    {
+     "name": "amount",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0xf233f7be4ce81130a78e8eb2fa626497586c56094d27bfec2e196471e9c60301": {
+   "name": "PositionsMerged",
+   "signature": "PositionsMerged(address,bytes31,address,uint256)",
+   "inputs": [
+    {
+     "name": "initiator",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "conditionId",
+     "type": "bytes31",
+     "indexed": true
+    },
+    {
+     "name": "recipient",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "amount",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": true
+  },
+  "0xb6a6b8b17a43b07b9359dd12d304e42077eede9e672f8646144842c8604582a4": {
+   "name": "PositionsSplit",
+   "signature": "PositionsSplit(address,bytes31,address,address,uint256)",
+   "inputs": [
+    {
+     "name": "initiator",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "conditionId",
+     "type": "bytes31",
+     "indexed": true
+    },
+    {
+     "name": "recipient0",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "recipient1",
+     "type": "address",
+     "indexed": false
+    },
+    {
+     "name": "amount",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": true
+  },
+  "0xd0d8fcba5b80285328e7548929f62b04b74231003b83f988b2534b12782987eb": {
+   "name": "PriceSourceUpdated",
+   "signature": "PriceSourceUpdated(address,address)",
+   "inputs": [
+    {
+     "name": "oldSource",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "newSource",
+     "type": "address",
+     "indexed": true
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0x276e741ebae8abaf0570c9ed0966d2d2ad14ced02a2f436d9fd882a20e249aca": {
+   "name": "ProductSpecificationUpdated",
+   "signature": "ProductSpecificationUpdated(bytes32,string,string,uint64,uint64)",
+   "inputs": [
+    {
+     "name": "productId",
+     "type": "bytes32",
+     "indexed": true
+    },
+    {
+     "name": "name",
+     "type": "string",
+     "indexed": false
+    },
+    {
+     "name": "uri",
+     "type": "string",
+     "indexed": false
+    },
+    {
+     "name": "version",
+     "type": "uint64",
+     "indexed": false
+    },
+    {
+     "name": "updatedAt",
+     "type": "uint64",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0x6edb5841a476c9c29c34a652d1a44f785fe71a6157a3da9a6a6a589a1bd2945a": {
+   "name": "QuestionEmergencyResolved",
+   "signature": "QuestionEmergencyResolved(bytes32,uint256[])",
+   "inputs": [
+    {
+     "name": "questionID",
+     "type": "bytes32",
+     "indexed": true
+    },
+    {
+     "name": "payouts",
+     "type": "uint256[]",
+     "indexed": false
+    }
+   ],
+   "origin": "artifacts/UmaCtfAdapterV31.json",
+   "observed_live": false
+  },
+  "0x2435a0347185933b12027c6f394a5fd9c03646dba233e956f50658719dfc0b35": {
+   "name": "QuestionFlagged",
+   "signature": "QuestionFlagged(bytes32)",
+   "inputs": [
+    {
+     "name": "questionID",
+     "type": "bytes32",
+     "indexed": true
+    }
+   ],
+   "origin": "artifacts/UmaCtfAdapterV31.json",
+   "observed_live": false
+  },
+  "0xeee0897acd6893adcaf2ba5158191b3601098ab6bece35c5d57874340b64c5b7": {
+   "name": "QuestionInitialized",
+   "signature": "QuestionInitialized(bytes32,uint256,address,bytes,address,uint256,uint256)",
+   "inputs": [
+    {
+     "name": "questionID",
+     "type": "bytes32",
+     "indexed": true
+    },
+    {
+     "name": "requestTimestamp",
+     "type": "uint256",
+     "indexed": true
+    },
+    {
+     "name": "creator",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "ancillaryData",
+     "type": "bytes",
+     "indexed": false
+    },
+    {
+     "name": "rewardToken",
+     "type": "address",
+     "indexed": false
+    },
+    {
+     "name": "reward",
+     "type": "uint256",
+     "indexed": false
+    },
+    {
+     "name": "proposalBond",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "artifacts/UmaCtfAdapterV31.json",
+   "observed_live": false
+  },
+  "0x5909815fe7fe0a550d5fcb95fbf33821b580521d3c97089c6ce12808d1cd0566": {
+   "name": "QuestionManuallyResolved",
+   "signature": "QuestionManuallyResolved(bytes32,uint256[])",
+   "inputs": [
+    {
+     "name": "questionID",
+     "type": "bytes32",
+     "indexed": true
+    },
+    {
+     "name": "payouts",
+     "type": "uint256[]",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0x6ded7250a9d5f79aef5add44600fc20a74a0af6f4730baa4fc4ab87bf484b812": {
+   "name": "QuestionPaused",
+   "signature": "QuestionPaused(bytes32)",
+   "inputs": [
+    {
+     "name": "questionID",
+     "type": "bytes32",
+     "indexed": true
+    }
+   ],
+   "origin": "artifacts/UmaCtfAdapterV31.json",
+   "observed_live": false
+  },
+  "0xaac410f87d423a922a7b226ac68f0c2eaf5bf6d15e644ac0758c7f96e2c253f7": {
+   "name": "QuestionPrepared",
+   "signature": "QuestionPrepared(bytes32,bytes32,uint256,bytes)",
+   "inputs": [
+    {
+     "name": "marketId",
+     "type": "bytes32",
+     "indexed": true
+    },
+    {
+     "name": "questionId",
+     "type": "bytes32",
+     "indexed": true
+    },
+    {
+     "name": "index",
+     "type": "uint256",
+     "indexed": false
+    },
+    {
+     "name": "data",
+     "type": "bytes",
+     "indexed": false
+    }
+   ],
+   "origin": "artifacts/NegRiskAdapter.json",
+   "observed_live": true
+  },
+  "0x7981b5832932948db4e32a4a16a0f44b2ce7ff088574afb9364b313f70f82e8f": {
+   "name": "QuestionReset",
+   "signature": "QuestionReset(bytes32)",
+   "inputs": [
+    {
+     "name": "questionID",
+     "type": "bytes32",
+     "indexed": true
+    }
+   ],
+   "origin": "artifacts/UmaCtfAdapterV31.json",
+   "observed_live": false
+  },
+  "0x566c3fbdd12dd86bb341787f6d531f79fd7ad4ce7e3ae2d15ac0ca1b601af9df": {
+   "name": "QuestionResolved",
+   "signature": "QuestionResolved(bytes32,int256,uint256[])",
+   "inputs": [
+    {
+     "name": "questionID",
+     "type": "bytes32",
+     "indexed": true
+    },
+    {
+     "name": "settledPrice",
+     "type": "int256",
+     "indexed": true
+    },
+    {
+     "name": "payouts",
+     "type": "uint256[]",
+     "indexed": false
+    }
+   ],
+   "origin": "artifacts/UmaCtfAdapterV31.json",
+   "observed_live": false
+  },
+  "0x052435bc04fc49113a7bfd9198a92c0852ca622a621800f6da66d4b29b786c05": {
+   "name": "QuestionUnflagged",
+   "signature": "QuestionUnflagged(bytes32)",
+   "inputs": [
+    {
+     "name": "questionID",
+     "type": "bytes32",
+     "indexed": true
+    }
+   ],
+   "origin": "artifacts/UmaCtfAdapterV31.json",
+   "observed_live": false
+  },
+  "0x92d28918c5574e7fc0f4f948c39502682c81cfb4089b07b83f95b3264e5e5e06": {
+   "name": "QuestionUnpaused",
+   "signature": "QuestionUnpaused(bytes32)",
+   "inputs": [
+    {
+     "name": "questionID",
+     "type": "bytes32",
+     "indexed": true
+    }
+   ],
+   "origin": "artifacts/UmaCtfAdapterV31.json",
+   "observed_live": false
+  },
+  "0x2e8a93ee0bc6125d2853f66071e08402f5aa7b2c3ae3eff5184ba77d0dcd3261": {
+   "name": "ReceivePauseSet",
+   "signature": "ReceivePauseSet(bool)",
+   "inputs": [
+    {
+     "name": "paused",
+     "type": "bool",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0xeebddeddf4ae1ee54a48517af27958e7666d69c7ba2e3e7c2b0ff87ef5f4491e": {
+   "name": "Redemption",
+   "signature": "Redemption(address,uint256,uint256)",
+   "inputs": [
+    {
+     "name": "from",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "positionId",
+     "type": "uint256",
+     "indexed": true
+    },
+    {
+     "name": "payout",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": true
+  },
+  "0x7b4e633936952f2babe4b4b548a8ccb384cdfdf1a95247fbacd18e387b490502": {
+   "name": "RemainingConditionsDerivableAsNo",
+   "signature": "RemainingConditionsDerivableAsNo(bytes29)",
+   "inputs": [
+    {
+     "name": "eventId",
+     "type": "bytes29",
+     "indexed": true
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": true
+  },
+  "0x787a2e12f4a55b658b8f573c32432ee11a5e8b51677d1e1e937aaf6a0bb5776e": {
+   "name": "RemovedAdmin",
+   "signature": "RemovedAdmin(address,address)",
+   "inputs": [
+    {
+     "name": "admin",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "removedAdmin",
+     "type": "address",
+     "indexed": true
+    }
+   ],
+   "origin": "artifacts/NegRiskAdapter.json",
+   "observed_live": false
+  },
+  "0x5a0e1b88d8fab2783c9b8319efb377157ba306962b9b5cb72532fe4c1eacd52c": {
+   "name": "Reported",
+   "signature": "Reported(bytes32,address,bytes32)",
+   "inputs": [
+    {
+     "name": "conditionId",
+     "type": "bytes32",
+     "indexed": true
+    },
+    {
+     "name": "reporter",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "resultHash",
+     "type": "bytes32",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0x6bf8245b5da690a960a87fd564ee12cb93035e5878548d8e0b90309dde55a76a": {
+   "name": "ReporterAdded",
+   "signature": "ReporterAdded(bytes29,address)",
+   "inputs": [
+    {
+     "name": "eventId",
+     "type": "bytes29",
+     "indexed": true
+    },
+    {
+     "name": "reporter",
+     "type": "address",
+     "indexed": true
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0x6dfa2acc6f02c2512d0bea4c4ab45f5f781fe2abb365a6eb04ab2b2ddcd66402": {
+   "name": "ReporterConflict",
+   "signature": "ReporterConflict(bytes32,bytes32,bytes32,uint256[])",
+   "inputs": [
+    {
+     "name": "requestId",
+     "type": "bytes32",
+     "indexed": true
+    },
+    {
+     "name": "proposedResultHash",
+     "type": "bytes32",
+     "indexed": true
+    },
+    {
+     "name": "conflictingResultHash",
+     "type": "bytes32",
+     "indexed": true
+    },
+    {
+     "name": "conflictingResult",
+     "type": "uint256[]",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0xc14be9714cff6af699b94f2fa548a5a69ca0997966844840847cf531f82102e0": {
+   "name": "ReporterModuleAdded",
+   "signature": "ReporterModuleAdded(bytes29,address)",
+   "inputs": [
+    {
+     "name": "eventId",
+     "type": "bytes29",
+     "indexed": true
+    },
+    {
+     "name": "module",
+     "type": "address",
+     "indexed": true
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": true
+  },
+  "0xc963d7e540a2eabd6f748feea23fc08ec8a139eb6e5e62d7b233bdedd31526c6": {
+   "name": "ReporterModuleRemoved",
+   "signature": "ReporterModuleRemoved(bytes29,address)",
+   "inputs": [
+    {
+     "name": "eventId",
+     "type": "bytes29",
+     "indexed": true
+    },
+    {
+     "name": "module",
+     "type": "address",
+     "indexed": true
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0xac441911eac0e33a5e77f3fc8534bcb4c3a2814dc0e9a5f77e9a8458c5a360de": {
+   "name": "RequestInitialized",
+   "signature": "RequestInitialized(bytes31)",
+   "inputs": [
+    {
+     "name": "scopeId",
+     "type": "bytes31",
+     "indexed": true
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0x3f540a7f583087a9dcc5ae409a9757c451baede9df196f29fb15fe29fe2662c9": {
+   "name": "RequestInitialized",
+   "signature": "RequestInitialized(bytes29,address,uint256,uint256,uint16,uint8,address,uint32,address)",
+   "inputs": [
+    {
+     "name": "eventId",
+     "type": "bytes29",
+     "indexed": true
+    },
+    {
+     "name": "targetContract",
+     "type": "address",
+     "indexed": false
+    },
+    {
+     "name": "reporterThreshold",
+     "type": "uint256",
+     "indexed": false
+    },
+    {
+     "name": "disputerThreshold",
+     "type": "uint256",
+     "indexed": false
+    },
+    {
+     "name": "resultLength",
+     "type": "uint16",
+     "indexed": false
+    },
+    {
+     "name": "marketType",
+     "type": "uint8",
+     "indexed": false
+    },
+    {
+     "name": "arbitratorModule",
+     "type": "address",
+     "indexed": false
+    },
+    {
+     "name": "livenessWindow",
+     "type": "uint32",
+     "indexed": false
+    },
+    {
+     "name": "finalizer",
+     "type": "address",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": true
+  },
+  "0xdc53ded0d26e27b31f5cf0e3d4c9c4bbf186d45abf6b5f88af0b1534bfbe677f": {
+   "name": "RequestReported",
+   "signature": "RequestReported(bytes29,bytes32,int192,int192,uint256)",
+   "inputs": [
+    {
+     "name": "requestId",
+     "type": "bytes29",
+     "indexed": true
+    },
+    {
+     "name": "questionId",
+     "type": "bytes32",
+     "indexed": true
+    },
+    {
+     "name": "startPrice",
+     "type": "int192",
+     "indexed": false
+    },
+    {
+     "name": "endPrice",
+     "type": "int192",
+     "indexed": false
+    },
+    {
+     "name": "payout",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0x1e15c34094c71de8f5cafd2ab5e84ffb03d5b44394eb40632b3a4dce1c4311a0": {
+   "name": "RequestResolved",
+   "signature": "RequestResolved(bytes32,bytes32,address)",
+   "inputs": [
+    {
+     "name": "requestId",
+     "type": "bytes32",
+     "indexed": true
+    },
+    {
+     "name": "resultHash",
+     "type": "bytes32",
+     "indexed": false
+    },
+    {
+     "name": "resolver",
+     "type": "address",
+     "indexed": true
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": true
+  },
+  "0x6a2ba1a9b0df571f4ca699d337da6ecff0b0362663edbfddca1cb3a3ac1c06bf": {
+   "name": "RequestRulesUpdated",
+   "signature": "RequestRulesUpdated(bytes32,uint256)",
+   "inputs": [
+    {
+     "name": "requestId",
+     "type": "bytes32",
+     "indexed": true
+    },
+    {
+     "name": "reportersNotified",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0x3af790fafda720819b2fc6e15090606e81154e0ac9a92d38ecad006d99d20ecc": {
+   "name": "Rescued",
+   "signature": "Rescued(address,address,uint256)",
+   "inputs": [
+    {
+     "name": "asset",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "to",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "amount",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0xdc9b357849b1f270abed270e8b7b026ba0a6c0a0137ad63fe62595e9a5ef338e": {
+   "name": "ResolutionPaused",
+   "signature": "ResolutionPaused(bytes29,uint256)",
+   "inputs": [
+    {
+     "name": "id",
+     "type": "bytes29",
+     "indexed": true
+    },
+    {
+     "name": "timestamp",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0x7c4b1aa57f3709ea7889a5749c87fea12721ab4484993ecc65c07cba4b99bd46": {
+   "name": "ResolutionUnpaused",
+   "signature": "ResolutionUnpaused(bytes29)",
+   "inputs": [
+    {
+     "name": "id",
+     "type": "bytes29",
+     "indexed": true
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0x2883146a9b6f97f0c11f47a78214d9b6763323144fa6b91962867087cc6ced3d": {
+   "name": "ResolverPaused",
+   "signature": "ResolverPaused(address,uint256)",
+   "inputs": [
+    {
+     "name": "resolver",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "timestamp",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0x65ac3d2bec00c5066617c836d9abb95e150f3373fdec6bd5a86ad458fe48bab0": {
+   "name": "ResolverUnpaused",
+   "signature": "ResolverUnpaused(address)",
+   "inputs": [
+    {
+     "name": "resolver",
+     "type": "address",
+     "indexed": true
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0xd97f78d6ac166d50a9460f1079e3d55a2c8fbd390b020b1122d27c0531da99e4": {
+   "name": "ResultBridged",
+   "signature": "ResultBridged(bytes32,uint256,bytes31)",
+   "inputs": [
+    {
+     "name": "messageId",
+     "type": "bytes32",
+     "indexed": true
+    },
+    {
+     "name": "dstChain",
+     "type": "uint256",
+     "indexed": true
+    },
+    {
+     "name": "conditionId",
+     "type": "bytes31",
+     "indexed": true
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0xbc5cfd3515610af0e2196d410032fb4ab213d3cee8e295a4ae2a6267d061bad0": {
+   "name": "ResultDisputed",
+   "signature": "ResultDisputed(bytes32,address)",
+   "inputs": [
+    {
+     "name": "requestId",
+     "type": "bytes32",
+     "indexed": true
+    },
+    {
+     "name": "module",
+     "type": "address",
+     "indexed": true
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0x761abc6e906d0c1576163fdba575aa3ee3e86c433f64ee6d33696215bf5e90b1": {
+   "name": "ResultReceived",
+   "signature": "ResultReceived(bytes32,bytes31)",
+   "inputs": [
+    {
+     "name": "messageId",
+     "type": "bytes32",
+     "indexed": true
+    },
+    {
+     "name": "conditionId",
+     "type": "bytes31",
+     "indexed": true
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0x669c053fe14f2493990c0c90d8d2870cd45e2630b34b8a2b4f02869301987713": {
+   "name": "ResultReported",
+   "signature": "ResultReported(address,bytes31,uint256[])",
+   "inputs": [
+    {
+     "name": "resolver",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "conditionId",
+     "type": "bytes31",
+     "indexed": true
+    },
+    {
+     "name": "result",
+     "type": "uint256[]",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": true
+  },
+  "0x553ed0b8f6413e4ecbf8434f6ca75a7752f7620c095aedd5929c6e8212149396": {
+   "name": "ResultReported",
+   "signature": "ResultReported(bytes32,address,bytes32,uint256)",
+   "inputs": [
+    {
+     "name": "requestId",
+     "type": "bytes32",
+     "indexed": true
+    },
+    {
+     "name": "module",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "resultHash",
+     "type": "bytes32",
+     "indexed": false
+    },
+    {
+     "name": "votes",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": true
+  },
+  "0x69e13930513c83de572f0fdb24c4d1c3f8f8f77b841d792e0b89d81588581716": {
+   "name": "RouterHorizontalMerge",
+   "signature": "RouterHorizontalMerge(address,bytes29,uint256)",
+   "inputs": [
+    {
+     "name": "initiator",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "eventId",
+     "type": "bytes29",
+     "indexed": true
+    },
+    {
+     "name": "amount",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0xd470f36e1347dd1dbb72529813b06678ff587a767ea8eae6bc3906b24e6a08ab": {
+   "name": "RouterHorizontalSplit",
+   "signature": "RouterHorizontalSplit(address,bytes29,uint256)",
+   "inputs": [
+    {
+     "name": "initiator",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "eventId",
+     "type": "bytes29",
+     "indexed": true
+    },
+    {
+     "name": "amount",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0x87e385df53b4ec94408ffc0ae0728448abc68c13f48490c9e614af5262600282": {
+   "name": "RouterPositionConverted",
+   "signature": "RouterPositionConverted(address,bytes29,uint256,uint256)",
+   "inputs": [
+    {
+     "name": "initiator",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "eventId",
+     "type": "bytes29",
+     "indexed": true
+    },
+    {
+     "name": "conditionIndex",
+     "type": "uint256",
+     "indexed": false
+    },
+    {
+     "name": "amount",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0x81b466b1b365aea7f5664f9a2d8b3a8591d3244acffb5134355ad4da7fe2366a": {
+   "name": "RouterPositionRedeemed",
+   "signature": "RouterPositionRedeemed(address,uint256,uint256)",
+   "inputs": [
+    {
+     "name": "initiator",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "positionId",
+     "type": "uint256",
+     "indexed": true
+    },
+    {
+     "name": "amount",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": true
+  },
+  "0x04373eecd7397b9318ae470769098aaab46f432620d95b0d84fc2297a415704c": {
+   "name": "RouterPositionSplit",
+   "signature": "RouterPositionSplit(address,bytes31,uint256)",
+   "inputs": [
+    {
+     "name": "initiator",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "conditionId",
+     "type": "bytes31",
+     "indexed": true
+    },
+    {
+     "name": "amount",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": true
+  },
+  "0x8eb905ea8eb4589289705df45fe31e6d4a35385a223b60c259691cc86dbfb982": {
+   "name": "RouterPositionsMerged",
+   "signature": "RouterPositionsMerged(address,bytes31,uint256)",
+   "inputs": [
+    {
+     "name": "initiator",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "conditionId",
+     "type": "bytes31",
+     "indexed": true
+    },
+    {
+     "name": "amount",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": true
+  },
+  "0xeb2f63efe5d8d4ddfbb3ee2e77f31460c93206cae5c1800897b8830b84471091": {
+   "name": "RuleAdded",
+   "signature": "RuleAdded(bytes32,uint256,uint256,bytes)",
+   "inputs": [
+    {
+     "name": "requestId",
+     "type": "bytes32",
+     "indexed": true
+    },
+    {
+     "name": "index",
+     "type": "uint256",
+     "indexed": false
+    },
+    {
+     "name": "timestamp",
+     "type": "uint256",
+     "indexed": false
+    },
+    {
+     "name": "data",
+     "type": "bytes",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0x072973640b7e459562d2263a4323abec949daae6e23882c2f64c809c6efdb2c6": {
+   "name": "SendPauseSet",
+   "signature": "SendPauseSet(bool)",
+   "inputs": [
+    {
+     "name": "paused",
+     "type": "bool",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0x1a07698f7dd85df4924787e65bad71fa08c54c04700b09c8c648c6e797540202": {
+   "name": "SplitOnCondition",
+   "signature": "SplitOnCondition(address,bytes31,bytes31,bytes31,address,address,uint256)",
+   "inputs": [
+    {
+     "name": "user",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "parentConditionId",
+     "type": "bytes31",
+     "indexed": true
+    },
+    {
+     "name": "childYesConditionId",
+     "type": "bytes31",
+     "indexed": false
+    },
+    {
+     "name": "childNoConditionId",
+     "type": "bytes31",
+     "indexed": false
+    },
+    {
+     "name": "recipient0",
+     "type": "address",
+     "indexed": false
+    },
+    {
+     "name": "recipient1",
+     "type": "address",
+     "indexed": false
+    },
+    {
+     "name": "amount",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": true
+  },
+  "0x24ddc4002a06123a2abb28bb44889b496299eac2a85e9ccf87514396dda1d063": {
+   "name": "SplitOnEvent",
+   "signature": "SplitOnEvent(address,bytes31,bytes29,address[],uint256)",
+   "inputs": [
+    {
+     "name": "user",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "parentConditionId",
+     "type": "bytes31",
+     "indexed": true
+    },
+    {
+     "name": "eventId",
+     "type": "bytes29",
+     "indexed": true
+    },
+    {
+     "name": "recipients",
+     "type": "address[]",
+     "indexed": false
+    },
+    {
+     "name": "amount",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0x5bea118d92630445b0b401b6883731630ed870edf2f259980efe977dfc128b36": {
+   "name": "SyntheticConditionDerivableAsYes",
+   "signature": "SyntheticConditionDerivableAsYes(bytes29,bytes31)",
+   "inputs": [
+    {
+     "name": "eventId",
+     "type": "bytes29",
+     "indexed": true
+    },
+    {
+     "name": "conditionId",
+     "type": "bytes31",
+     "indexed": true
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0x203c4bd3e526634f661575359ff30de3b0edaba6c2cb1eac60f730b6d2d9d536": {
+   "name": "TradingPaused",
+   "signature": "TradingPaused(address)",
+   "inputs": [
+    {
+     "name": "pauser",
+     "type": "address",
+     "indexed": true
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0xa1e8a54850dbd7f520bcc09f47bff152294b77b2081da545a7adf531b7ea283b": {
+   "name": "TradingUnpaused",
+   "signature": "TradingUnpaused(address)",
+   "inputs": [
+    {
+     "name": "pauser",
+     "type": "address",
+     "indexed": true
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef": {
+   "name": "Transfer",
+   "signature": "Transfer(address,address,uint256)",
+   "inputs": [
+    {
+     "name": "from",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "to",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "value",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0x6bb7ff708619ba0610cba295a58592e0451dee2622938c8755667688daf3529b": {
+   "name": "URI",
+   "signature": "URI(string,uint256)",
+   "inputs": [
+    {
+     "name": "value",
+     "type": "string",
+     "indexed": false
+    },
+    {
+     "name": "id",
+     "type": "uint256",
+     "indexed": true
+    }
+   ],
+   "origin": "artifacts/ConditionalTokens.json",
+   "observed_live": false
+  },
+  "0x5db9ee0a495bf2e6ff9c91a7834c1ba4fdd244a5e8aa4e537bd38aeae4b073aa": {
+   "name": "Unpaused",
+   "signature": "Unpaused(address)",
+   "inputs": [
+    {
+     "name": "asset",
+     "type": "address",
+     "indexed": true
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0x49c5e71a70e54b164c70c3345b2f3ca11fbad1c05a76146be4c4e849f992658b": {
+   "name": "Unwrapped",
+   "signature": "Unwrapped(address,uint256,uint256,address,uint256)",
+   "inputs": [
+    {
+     "name": "user",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "combinatorialPositionId",
+     "type": "uint256",
+     "indexed": false
+    },
+    {
+     "name": "underlyingPositionId",
+     "type": "uint256",
+     "indexed": false
+    },
+    {
+     "name": "recipient",
+     "type": "address",
+     "indexed": false
+    },
+    {
+     "name": "amount",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": true
+  },
+  "0x18b42b684d0b621cc609f4d888916e5ed9e934a476259ec1c11ec116f2b9aa7f": {
+   "name": "Unwrapped",
+   "signature": "Unwrapped(address,address,address,uint256)",
+   "inputs": [
+    {
+     "name": "caller",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "asset",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "to",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "amount",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0x8c8acf678b7cd311e3b5768c92794d63943684862fdea390856e14d9e2a9ef88": {
+   "name": "UserPauseBlockIntervalUpdated",
+   "signature": "UserPauseBlockIntervalUpdated(uint256,uint256)",
+   "inputs": [
+    {
+     "name": "oldInterval",
+     "type": "uint256",
+     "indexed": false
+    },
+    {
+     "name": "newInterval",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0xa3e76126f19eb25001b29726d2a9502b6377938633d2d6a955107dd442e7a14a": {
+   "name": "UserPaused",
+   "signature": "UserPaused(address,uint256)",
+   "inputs": [
+    {
+     "name": "user",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "effectivePauseBlock",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0x1419d4111b5c8636aecff843bf618525f4f8e1aa6898a14357021d68dde8af12": {
+   "name": "UserUnpaused",
+   "signature": "UserUnpaused(address)",
+   "inputs": [
+    {
+     "name": "user",
+     "type": "address",
+     "indexed": true
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  },
+  "0xee943741871b99130d74367c491afe27aa9324108e10ae51d0a8f9e8cd9f9eff": {
+   "name": "Wrapped",
+   "signature": "Wrapped(address,uint256,uint256,address,uint256)",
+   "inputs": [
+    {
+     "name": "user",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "underlyingPositionId",
+     "type": "uint256",
+     "indexed": false
+    },
+    {
+     "name": "combinatorialPositionId",
+     "type": "uint256",
+     "indexed": false
+    },
+    {
+     "name": "recipient",
+     "type": "address",
+     "indexed": false
+    },
+    {
+     "name": "amount",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": true
+  },
+  "0xc00a5c84859ae82a7f5e6a2773283fb525335d5b3195f61174aa1ecc7e15dd84": {
+   "name": "Wrapped",
+   "signature": "Wrapped(address,address,address,uint256)",
+   "inputs": [
+    {
+     "name": "caller",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "asset",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "to",
+     "type": "address",
+     "indexed": true
+    },
+    {
+     "name": "amount",
+     "type": "uint256",
+     "indexed": false
+    }
+   ],
+   "origin": "v2 solidity",
+   "observed_live": false
+  }
+ }
+}

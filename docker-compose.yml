@@ -19,6 +19,9 @@ services:
   chain-transfers:   # ERC-1155 transfers (CTF + PositionManager)
     <<: *common
     command: ["chain", "transfers", "--follow", "60"]
+  chain-lifecycle:   # split/merge/redeem/convert/migration/resolution, CTF + Protocol V2 (+ oracle)
+    <<: *common
+    command: ["chain", "lifecycle", "--follow", "60"]
   holders:           # top-holder snapshots with entry/PnL, hourly
     <<: *common
     command: ["holders", "--top", "200", "--every", "60"]

@@ -149,6 +149,7 @@ STREAMS = {
     # stream -> (contract kind, topic0 list, decoder, dataset, schema)
     "fills": ("exchange", [SIG_ORDER_FILLED], lambda lg: [decode_order_filled(lg)], "chain_fills",
               FILL_SCHEMA),
+    "lifecycle": ("lifecycle", None, None, "chain_lifecycle", None),  # filled lazily below
     "transfers": ("erc1155", [SIG_TRANSFER_SINGLE, SIG_TRANSFER_BATCH], decode_transfers,
                   "chain_transfers", TRANSFER_SCHEMA),
 }
@@ -171,6 +172,9 @@ def index_stream(settings, http: Http, stream: str, from_block: int | None = Non
                  ) -> dict:
     """Index [cursor+1 .. to_block] for one stream. Returns stats incl. gaps detected."""
     kind, topics, decoder, dataset, schema = STREAMS[stream]
+    if stream == "lifecycle":
+        from . import lifecycle as lc
+        topics, decoder, schema = lc.topics(), lc.decode_lifecycle, lc.LIFECYCLE_SCHEMA
     ccfg = settings["chain"]
     addrs = [a for a, k in ccfg["contracts"].values() if k == kind]
     rpc = Rpc(http, settings.endpoint("polygon_rpc"))
