@@ -42,3 +42,10 @@ the job and uploads the files in the manifest to the dashboard's datasets.
 ## Rules carried from the charter
 Paper only, no keys. Failed calls are logged and never filled. Outputs keep the code that made them (`meta` of the
 JSON files), and every run records the git revision.
+
+## Dashboard pages
+`pipeline/dashboards/*.html` are the page sources stored in each dashboard (datasets = the `art/*.json` files).
+`render_check.js` renders a page in headless Chromium with a stand-in for the dashboard API and the local
+`art/` files, and reports script errors and horizontal overflow:
+`node pipeline/dashboards/render_check.js pipeline/dashboards/central_bank.html studies/central_bank/art out.png 400`
+(needs `npm install d3@7.9.0` next to it and Playwright).

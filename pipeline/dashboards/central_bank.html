@@ -1,0 +1,276 @@
+<meta name="dash-one-writer">
+<style>
+.cb { display: flex; flex-direction: column; gap: var(--cds-gap-xl); font-family: var(--font-anthropic-sans); color: var(--color-fg); }
+.cb h1 { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: var(--cds-font-size-title); margin: 0; text-wrap: balance; }
+.cb h2 { font-size: var(--cds-font-size-heading); font-weight: var(--cds-font-weight-medium); margin: 0; }
+.cb h3 { font-size: var(--cds-font-size-body); font-weight: var(--cds-font-weight-medium); margin: 0; }
+.cb p { margin: 0; max-width: 76ch; line-height: 1.5; }
+.cb .muted { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); }
+.cb section { display: flex; flex-direction: column; gap: var(--cds-gap-md); }
+.cb .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(128px, 1fr)); gap: var(--cds-gap-sm); }
+.cb .tile { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-md); display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.cb .tile .v { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: var(--cds-font-size-title); font-variant-numeric: tabular-nums; }
+.cb .tile .l { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+.cb .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--cds-gap-lg); }
+.cb .card { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-lg); display: flex; flex-direction: column; gap: var(--cds-gap-sm); min-width: 0; }
+.cb .chart { position: relative; min-height: 260px; width: 100%; }
+.cb .chart svg { display: block; width: 100%; }
+.cb .chart text { fill: var(--cds-text-secondary); font-size: var(--cds-font-size-caption); font-family: var(--font-anthropic-sans); }
+.cb .chart .domain, .cb .chart .tick line { stroke: var(--cds-chart-axis); }
+.cb .chart .grid line { stroke: var(--cds-chart-grid); }
+.cb .tip { position: absolute; pointer-events: none; background: var(--cds-surface-popover); border: 1px solid var(--cds-border); box-shadow: var(--cds-shadow-popover); border-radius: var(--cds-radius); padding: 6px 8px; font-size: var(--cds-font-size-caption); color: var(--color-fg); white-space: nowrap; z-index: 2; }
+.cb .legend { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+.cb .legend span { display: inline-flex; align-items: center; gap: 4px; }
+.cb .sw { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+.cb .tablewrap { overflow-x: auto; max-width: 100%; }
+.cb table { border-collapse: collapse; width: 100%; font-size: var(--cds-font-size-caption); font-variant-numeric: tabular-nums; }
+.cb th, .cb td { padding: 5px 8px; text-align: right; border-bottom: 1px solid var(--color-border-line); white-space: nowrap; }
+.cb th { color: var(--color-fg-muted); font-weight: var(--cds-font-weight-medium); background: var(--color-panel); }
+.cb th:first-child, .cb td:first-child, .cb td.l, .cb th.l { text-align: left; }
+.cb .row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--cds-gap-sm); }
+.cb .inputs { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--cds-gap-sm); }
+.cb .input { border-left: 2px solid var(--color-warn); padding: 4px 0 4px var(--cds-pad-sm); font-size: var(--cds-font-size-caption); display: flex; flex-direction: column; gap: 2px; }
+.cb .input b { font-weight: var(--cds-font-weight-medium); }
+.cb .note { border-left: 2px solid var(--color-warn); padding-left: var(--cds-pad-sm); color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); max-width: 80ch; }
+.cb .pos { color: var(--color-ok); } .cb .neg { color: var(--color-bad); }
+.cb details summary { cursor: pointer; color: var(--color-fg-muted); }
+.cb a { color: inherit; }
+[data-dash-source-state=refreshing] { opacity: .5; }
+</style>
+
+<div class="cb">
+  <header id="top" style="display:flex;flex-direction:column;gap:var(--cds-gap-sm)">
+    <h1>FOMC Market Making</h1>
+    <p>Do order-book and trade-flow imbalance predict short-term moves on the Fed-decision markets, and does quoting on them beat naive quoting after costs? Recording so far: <b data-draw="h-hours" data-source="run" data-field="hours" data-row="0">—</b> hours, <b data-draw="h-trades" data-source="run" data-field="trades" data-row="0">—</b> trades across the three meetings. <span data-draw="h-verdict" data-source="signals">—</span></p>
+    <p class="muted"><span data-draw="h-window" data-source="run" data-field="window_start" data-row="0">—</span> to <span data-draw="h-window-end" data-source="run" data-field="window_end" data-row="0">—</span> · Polymarket CLOB books every 5 s and websocket trades · paper only, no orders.</p>
+  </header>
+
+  <section id="status">
+    <h2>Recorder status</h2>
+    <div class="tiles">
+      <div class="tile"><span class="v" data-draw="s-snap" data-source="run" data-field="snapshots" data-row="0">—</span><span class="l">Book snapshots</span></div>
+      <div class="tile"><span class="v" data-draw="s-exp" data-source="run" data-field="expected_snapshots" data-row="0">—</span><span class="l">Expected at 5 s</span></div>
+      <div class="tile"><span class="v" data-draw="s-trades" data-source="run" data-field="trades" data-row="0">—</span><span class="l">Trades recorded</span></div>
+      <div class="tile"><span class="v" data-draw="s-gaps" data-source="run" data-field="gaps" data-row="0">—</span><span class="l">Gaps over 15 s</span></div>
+      <div class="tile"><span class="v" data-draw="s-rec" data-source="run" data-field="reconnects" data-row="0">—</span><span class="l">Websocket reconnects</span></div>
+      <div class="tile"><span class="v" data-draw="s-spoof" data-source="run" data-field="spoof_events" data-row="0">—</span><span class="l">Vanished large orders</span></div>
+    </div>
+    <h3>Missing inputs</h3>
+    <div class="inputs">
+      <div class="input"><b>ZQ futures anchor</b><span data-draw="i-anchor" data-source="run" data-field="anchor_status" data-row="0">—</span></div>
+      <div class="input"><b>US data calendar (news flag)</b><span data-draw="i-news" data-source="run" data-field="news_status" data-row="0">—</span></div>
+      <div class="input"><b>Kalshi cross-venue</b><span data-draw="i-kalshi" data-source="run" data-field="kalshi_status" data-row="0">—</span></div>
+      <div class="input"><b>Backtester strategies</b><span data-draw="i-strat" data-source="run" data-field="strategies_status" data-row="0">—</span></div>
+    </div>
+  </section>
+
+  <section id="markets">
+    <h2>Markets and books</h2>
+    <div class="tablewrap">
+      <table data-source="book_stats" data-row-key="key">
+        <thead><tr><th class="l">Meeting</th><th class="l">Outcome</th><th data-field="last_mid">Mid</th><th data-field="spread_c">Spread (c)</th><th data-field="top_size">Top size</th><th data-field="bid_depth5">Bid depth 5</th><th data-field="ask_depth5">Ask depth 5</th><th data-field="trades">Trades</th><th data-field="reward_per_day">Rewards $/day</th><th data-field="reward_min_size">Reward min size</th><th data-field="quote_size">Our quote size</th><th data-field="coverage">Coverage</th></tr></thead>
+        <tbody data-draw="book-table"></tbody>
+      </table>
+    </div>
+    <p class="note">Our quote size is 5% of the average top-of-book size. Where it is below the reward minimum, the paper book earns no liquidity rewards.</p>
+    <div class="row">
+      <label class="muted" for="mid-meeting">Meeting</label>
+      <select id="mid-meeting" class="dash-select" data-draw="mid-select" aria-label="Meeting for the mid chart" data-source="book_stats"></select>
+    </div>
+    <div class="grid2">
+      <div class="card" id="mid-card">
+        <h3>Mid price by outcome, 1-minute</h3>
+        <div class="chart" data-draw="mid-chart" data-source="mids"></div>
+        <div class="legend" data-draw="mid-legend"></div>
+      </div>
+      <div class="card" id="curve-card">
+        <h3>Curve check: expected move per meeting (bp)</h3>
+        <p class="muted">Probability-weighted move implied by Polymarket, hourly. 50+ bp buckets count as 50 bp. The ZQ strip comparison is empty until a futures source is connected.</p>
+        <div class="chart" data-draw="curve-chart" data-source="curve"></div>
+        <div class="legend" data-draw="curve-legend"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="signals">
+    <h2>Signal study (Phase 2)</h2>
+    <p>Correlation and hit rate of each signal against the change in mid at each horizon, per meeting. Hit rate counts only snapshots where both the signal and the mid moved. The prompt asks for a week of data before reading these; until then they describe the recording, not an edge.</p>
+    <div class="row">
+      <label class="muted" for="sig-meeting">Meeting</label>
+      <select id="sig-meeting" class="dash-select" data-draw="sig-meeting" aria-label="Meeting" data-source="signals"></select>
+      <label class="muted" for="sig-split">Split</label>
+      <select id="sig-split" class="dash-select" data-draw="sig-split" aria-label="Split" data-source="signals"></select>
+    </div>
+    <div class="tablewrap">
+      <table data-source="signals" data-row-key="key">
+        <thead><tr><th class="l">Signal</th><th class="l">Horizon</th><th data-field="n">Snapshots</th><th data-field="n_moves">Moves</th><th data-field="n_indep">≈ Independent</th><th data-field="corr">Correlation</th><th data-field="hit_rate">Hit rate</th></tr></thead>
+        <tbody data-draw="sig-table"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="paper">
+    <h2>Paper trading (Phase 3)</h2>
+    <p class="note">P1 to P5 are placeholder strategies (join, improve one tick, pull on imbalance, centre on microprice, inventory cap) until pm_mm_backtest.py is supplied. Fill model: improving the best price puts us first in the queue, joining puts us last, and a market that trades or reprices through the quote fills it in full. Makers pay no fee; the rebate is 25% of the taker fee; rewards are a rough estimate.</p>
+    <div class="tablewrap">
+      <table data-source="paper" data-row-key="key">
+        <thead><tr><th class="l">Strategy</th><th class="l">Meeting</th><th data-field="pnl">P&amp;L $</th><th data-field="pnl_with_rebates_rewards">With rebates + rewards $</th><th data-field="fills">Fills</th><th data-field="repriced_fills">Picked off</th><th data-field="edge_fill">Edge at fill (c)</th><th data-field="edge_5m">Edge 5 min later (c)</th><th data-field="max_dd">Max drawdown $</th><th data-field="max_inv">Max inventory</th></tr></thead>
+        <tbody data-draw="paper-table"></tbody>
+      </table>
+    </div>
+    <p class="muted">P&amp;L inside vs outside news windows is not available until a data calendar is supplied.</p>
+  </section>
+
+  <section id="readout">
+    <h2>Weekly read-out</h2>
+    <p><b>Evidence of edge:</b> <span data-draw="r-evidence" data-source="signals paper">—</span></p>
+    <p><b>What would falsify it:</b> imbalance hit rates within two standard errors of 50% once each meeting has 100+ independent moves, or a 5-minute markout on fills that is negative enough to cancel the spread captured plus the 25% rebate.</p>
+    <p><b>What to change next:</b> connect the ZQ source so the anchor signal and the curve gap exist, add the data calendar so news windows can be cut out, run the backtester's own five strategies, and keep the recorder on an always-on host so the archive has no holes.</p>
+  </section>
+
+  <details>
+    <summary>Recorder log</summary>
+    <div class="tablewrap"><table data-source="sessions"><thead><tr><th class="l">Time (UTC)</th><th class="l">Event</th><th class="l">Detail</th></tr></thead><tbody data-draw="log-table"></tbody></table></div>
+  </details>
+</div>
+
+<script>
+(function () {
+  const pct = d3.format('.0%'), num = d3.format(',.0f'), c2 = d3.format('.3f'), sg = d3.format('+.2f');
+  const ok = (id) => dash.data(id).status === 'ok';
+  const rows = (id) => (ok(id) ? dash.data(id).data : []);
+  const blank = (v, f) => (v === null || v === undefined || Number.isNaN(v) ? '' : f(v));
+  const OUTCOMES = ['50+ bps decrease', '25 bps decrease', 'No change', '25 bps increase', '50+ bps increase'];
+  const MEETINGS = ['Dec-2026', 'Jan-2027', 'Mar-2027'];
+  const col = (i) => dash.colors[i % dash.colors.length];
+  window.cbState = window.cbState || { mid: 'Dec-2026', sigMeeting: 'Dec-2026', split: 'all' };
+
+  const val = (id, f) => (el) => { const d = dash.data(id); el.textContent = d.status === 'ok' && d.data[0] ? f(d.data[0][el.dataset.field]) : '—'; };
+  const txt = (v) => (v == null ? '—' : String(v));
+  dash.draw('h-hours', val('run', (v) => (v == null ? '—' : d3.format('.1f')(v))));
+  ['h-trades', 's-snap', 's-exp', 's-trades', 's-gaps', 's-rec', 's-spoof'].forEach((n) => dash.draw(n, val('run', (v) => (v == null ? '—' : num(v)))));
+  ['h-window', 'h-window-end', 'i-anchor', 'i-news', 'i-kalshi', 'i-strat'].forEach((n) => dash.draw(n, val('run', txt)));
+
+  function bestMoves() {
+    // overlapping 5 s snapshots: one-minute moves are roughly independent only every 12 snapshots
+    return Math.floor(d3.max(rows('signals').filter((r) => r.split === 'all' && r.horizon === '1m'), (r) => r.n_moves * 5 / 60) || 0);
+  }
+  dash.draw('h-verdict', (el) => {
+    if (!ok('signals')) { el.textContent = '—'; return; }
+    const m = bestMoves();
+    el.textContent = m < 100 ? `Too little data to judge: at most about ${num(m)} independent one-minute mid moves per meeting so far, against the 100+ the method rules require.` : `The busiest meeting now has about ${num(m)} independent one-minute mid moves; read the signal table below.`;
+  });
+  dash.draw('r-evidence', (el) => {
+    if (!ok('signals') || !ok('paper')) { el.textContent = '—'; return; }
+    const m = bestMoves();
+    const fills = d3.sum(rows('paper'), (r) => r.fills);
+    el.textContent = m < 100 ? `none yet. The recording holds at most about ${num(m)} independent one-minute mid moves per meeting and the paper strategies have ${num(fills)} fills in total, so no correlation or P&L here can separate skill from noise.` : `see the signal table; paper strategies have ${num(fills)} fills so far.`;
+  });
+
+  // ------------------------------------------------ book table
+  dash.draw('book-table', (tb) => {
+    const rs = rows('book_stats').slice().sort((a, b) => MEETINGS.indexOf(a.meeting) - MEETINGS.indexOf(b.meeting) || OUTCOMES.indexOf(a.outcome) - OUTCOMES.indexOf(b.outcome));
+    tb.replaceChildren(...rs.map((r) => {
+      const tr = document.createElement('tr'); tr.dataset.key = encodeURIComponent(r.key);
+      [r.meeting, r.outcome, blank(r.last_mid, c2), blank(r.spread_c, d3.format('.2f')), blank(r.top_size, num), blank(r.bid_depth5, num), blank(r.ask_depth5, num), num(r.trades), blank(r.reward_per_day, num), blank(r.reward_min_size, num), num(r.quote_size), blank(r.coverage, pct)]
+        .forEach((c, k) => { const td = document.createElement('td'); if (k < 2) td.className = 'l'; td.textContent = c; tr.append(td); });
+      return tr;
+    }));
+  });
+
+  // ------------------------------------------------ charts
+  function frame(el, h, ml) {
+    d3.select(el).selectAll('svg,p.ph').remove();
+    const w = Math.max(280, el.clientWidth);
+    const m = { t: 10, r: 36, b: 26, l: ml || 48 };
+    const svg = d3.select(el).append('svg').attr('viewBox', `0 0 ${w} ${h}`).attr('width', '100%').attr('role', 'img');
+    return { svg, w, h, m, iw: w - m.l - m.r, ih: h - m.t - m.b };
+  }
+  function ph(el, id) { d3.select(el).selectAll('svg').remove(); d3.select(el).selectAll('p.ph').data([0]).join('p').attr('class', 'ph muted').text(dash.data(id).status === 'error' ? 'Failed to load' : '—'); }
+  function tip(el) { let t = d3.select(el).select('div.tip'); if (t.empty()) t = d3.select(el).append('div').attr('class', 'tip').style('display', 'none'); return t; }
+  function show(t, el, ev, s) { const [x, y] = d3.pointer(ev, el); t.style('display', null).text(s); const tw = t.node().offsetWidth; t.style('left', Math.min(Math.max(0, x + 10), el.clientWidth - tw) + 'px').style('top', Math.max(0, y - 30) + 'px'); }
+  function legend(el, items) {
+    d3.select(el).selectAll(':scope > span.lg').data(items).join('span').attr('class', 'lg').each(function (d) {
+      const s = d3.select(this); s.selectAll('*').remove(); s.append('i').attr('class', 'sw').style('background', d.c); s.append('b').style('font-weight', 'normal').text(d.t);
+    });
+  }
+  function lines(el, data, key, yField, yFmt, label, refZero) {
+    const f = frame(el, 260, 52);
+    f.svg.attr('aria-label', label);
+    if (!data.length) { f.svg.append('text').attr('x', f.m.l).attr('y', 40).text('No data yet'); return; }
+    const x = d3.scaleUtc().domain(d3.extent(data, (r) => r.d)).range([f.m.l, f.w - f.m.r]);
+    const ext = d3.extent(refZero ? [0, ...data.map((r) => r[yField])] : data.map((r) => r[yField]));
+    if (ext[0] === ext[1]) { ext[0] -= 0.01; ext[1] += 0.01; }
+    const y = d3.scaleLinear().domain(ext).nice().range([f.h - f.m.b, f.m.t]);
+    f.svg.append('g').attr('class', 'grid').attr('transform', `translate(${f.m.l},0)`).call(d3.axisLeft(y).ticks(5).tickSize(-f.iw).tickFormat('')).call((g) => g.select('.domain').remove());
+    f.svg.append('g').attr('transform', `translate(0,${f.h - f.m.b})`).call(d3.axisBottom(x).ticks(Math.max(2, Math.floor(f.iw / 100))).tickFormat(d3.utcFormat('%d %b %H:%M')));
+    f.svg.append('g').attr('transform', `translate(${f.m.l},0)`).call(d3.axisLeft(y).ticks(5).tickFormat(yFmt));
+    if (refZero) f.svg.append('line').attr('x1', f.m.l).attr('x2', f.w - f.m.r).attr('y1', y(0)).attr('y2', y(0)).style('stroke', 'var(--cds-chart-reference)');
+    const groups = d3.groups(data, (r) => r[key]);
+    groups.forEach(([k, s], i) => {
+      f.svg.append('path').datum(s).attr('d', d3.line().x((r) => x(r.d)).y((r) => y(r[yField]))).style('fill', 'none').style('stroke', s[0].c).style('stroke-width', 1.8);
+      const last = s[s.length - 1];
+      f.svg.append('circle').attr('cx', x(last.d)).attr('cy', y(last[yField])).attr('r', 3).style('fill', s[0].c);
+    });
+    const t = tip(el);
+    f.svg.append('rect').attr('x', f.m.l).attr('y', f.m.t).attr('width', f.iw).attr('height', f.ih).style('fill', 'transparent')
+      .on('pointermove', (ev) => { const xd = x.invert(d3.pointer(ev)[0]); const at = groups.map(([k, s]) => s[d3.bisector((r) => r.d).center(s, xd)]); show(t, el, ev, d3.utcFormat('%d %b %H:%M')(at[0].d) + ' UTC · ' + at.map((r) => `${r[key]} ${yFmt(r[yField])}`).join(' · ')); })
+      .on('pointerleave', () => t.style('display', 'none'));
+  }
+  dash.draw('mid-select', (sel) => {
+    sel.replaceChildren(...MEETINGS.map((m) => new Option(m, m)));
+    sel.value = cbState.mid;
+    sel.onchange = () => { cbState.mid = sel.value; dash.draw('mid-chart'); dash.draw('mid-legend'); };
+  });
+  dash.draw('mid-chart', (el) => {
+    if (!ok('mids')) return ph(el, 'mids');
+    const data = rows('mids').filter((r) => r.meeting === cbState.mid).map((r) => ({ ...r, d: new Date(r.ts), c: col(OUTCOMES.indexOf(r.outcome)) }));
+    lines(el, data, 'outcome', 'mid', d3.format('.0%'), `Mid price of each outcome for the ${cbState.mid} meeting`, false);
+  });
+  dash.draw('mid-legend', (el) => legend(el, OUTCOMES.map((o, i) => ({ t: o, c: col(i) }))));
+  dash.draw('curve-chart', (el) => {
+    if (!ok('curve')) return ph(el, 'curve');
+    const keys = [...MEETINGS, 'All 3'];
+    const data = rows('curve').map((r) => ({ ...r, d: new Date(r.hour), c: col(keys.indexOf(r.meeting)) }));
+    lines(el, data, 'meeting', 'exp_bp', d3.format('+.1f'), 'Expected move in basis points per meeting and for all three, hourly', true);
+  });
+  dash.draw('curve-legend', (el) => legend(el, [...MEETINGS, 'All 3'].map((m, i) => ({ t: m === 'All 3' ? 'Sum of the three meetings' : m, c: col(i) }))));
+
+  // ------------------------------------------------ signal table
+  dash.draw('sig-meeting', (sel) => {
+    sel.replaceChildren(...MEETINGS.map((m) => new Option(m, m)));
+    sel.value = cbState.sigMeeting;
+    sel.onchange = () => { cbState.sigMeeting = sel.value; dash.draw('sig-table'); };
+  });
+  dash.draw('sig-split', (sel) => {
+    const splits = [...new Set(rows('signals').map((r) => r.split))];
+    sel.replaceChildren(...splits.map((s) => new Option(s, s)));
+    if (splits.includes(cbState.split)) sel.value = cbState.split;
+    sel.onchange = () => { cbState.split = sel.value; dash.draw('sig-table'); };
+  });
+  const SIGNAME = { tob_imb: 'Top-of-book imbalance', l5_imb: '5-level imbalance', micro_minus_mid: 'Microprice − mid', flow_imb_5m: '5-min trade-flow imbalance', anchor_minus_mid: 'Anchor − mid (no ZQ data)' };
+  dash.draw('sig-table', (tb) => {
+    const rs = rows('signals').filter((r) => r.meeting === cbState.sigMeeting && r.split === cbState.split);
+    tb.replaceChildren(...rs.map((r) => {
+      const tr = document.createElement('tr'); tr.dataset.key = encodeURIComponent(r.key);
+      [SIGNAME[r.signal] || r.signal, r.horizon, num(r.n), num(r.n_moves), num(r.n_indep), blank(r.corr, d3.format('+.3f')), blank(r.hit_rate, pct)]
+        .forEach((c, k) => { const td = document.createElement('td'); if (k < 2) td.className = 'l'; td.textContent = c; tr.append(td); });
+      return tr;
+    }));
+  });
+
+  // ------------------------------------------------ paper table
+  dash.draw('paper-table', (tb) => {
+    tb.replaceChildren(...rows('paper').map((r) => {
+      const tr = document.createElement('tr'); tr.dataset.key = encodeURIComponent(r.key);
+      const cells = [r.strategy, r.meeting, sg(r.pnl), sg(r.pnl_with_rebates_rewards), num(r.fills), num(r.repriced_fills), blank(r.edge_fill == null ? null : r.edge_fill * 100, d3.format('+.2f')), blank(r.edge_5m == null ? null : r.edge_5m * 100, d3.format('+.2f')), d3.format('.2f')(r.max_dd), num(r.max_inv)];
+      const sgn = [null, null, r.pnl, r.pnl_with_rebates_rewards];
+      cells.forEach((c, k) => { const td = document.createElement('td'); if (k < 2) td.className = 'l'; if ((k === 2 || k === 3) && Math.abs(sgn[k]) >= 0.005) td.className = sgn[k] < 0 ? 'neg' : 'pos'; td.textContent = c; tr.append(td); });
+      return tr;
+    }));
+  });
+  dash.draw('log-table', (tb) => {
+    tb.replaceChildren(...rows('sessions').map((r) => { const tr = document.createElement('tr'); [r.ts, r.kind, r.detail].forEach((c) => { const td = document.createElement('td'); td.className = 'l'; td.style.whiteSpace = 'normal'; td.textContent = c; tr.append(td); }); return tr; }));
+  });
+})();
+</script>

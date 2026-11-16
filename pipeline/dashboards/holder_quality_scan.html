@@ -1,0 +1,509 @@
+<meta name="dash-one-writer">
+<style>
+.hq { display: flex; flex-direction: column; gap: var(--cds-gap-xl); font-family: var(--font-anthropic-sans); color: var(--color-fg); }
+.hq h1 { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: var(--cds-font-size-title); margin: 0; text-wrap: balance; }
+.hq h2 { font-size: var(--cds-font-size-heading); font-weight: var(--cds-font-weight-medium); margin: 0; }
+.hq h3 { font-size: var(--cds-font-size-body); font-weight: var(--cds-font-weight-medium); margin: 0; }
+.hq p { margin: 0; max-width: 72ch; line-height: 1.5; }
+.hq .muted { color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); }
+.hq .lede { font-size: var(--cds-font-size-body); color: var(--color-fg); }
+.hq section { display: flex; flex-direction: column; gap: var(--cds-gap-md); }
+.hq .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(128px, 1fr)); gap: var(--cds-gap-sm); }
+.hq .tile { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-md); display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.hq .tile .v { font-family: var(--font-anthropic-serif); font-weight: 400; font-size: var(--cds-font-size-title); font-variant-numeric: tabular-nums; }
+.hq .tile .l { font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+.hq .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--cds-gap-lg); }
+.hq .card { background: var(--color-panel); border: 1px solid var(--color-border-line); border-radius: var(--cds-radius); padding: var(--cds-pad-lg); display: flex; flex-direction: column; gap: var(--cds-gap-sm); min-width: 0; }
+.hq .chart { position: relative; min-height: 240px; width: 100%; }
+.hq .chart.tall { min-height: 280px; }
+.hq .chart svg { display: block; width: 100%; }
+.hq .chart text { fill: var(--cds-text-secondary); font-size: var(--cds-font-size-caption); font-family: var(--font-anthropic-sans); }
+.hq .chart .domain, .hq .chart .tick line { stroke: var(--cds-chart-axis); }
+.hq .chart .grid line { stroke: var(--cds-chart-grid); }
+.hq .tip { position: absolute; pointer-events: none; background: var(--cds-surface-popover); border: 1px solid var(--cds-border); box-shadow: var(--cds-shadow-popover); border-radius: var(--cds-radius); padding: 6px 8px; font-size: var(--cds-font-size-caption); color: var(--color-fg); white-space: nowrap; z-index: 2; }
+.hq .legend { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: var(--cds-font-size-caption); color: var(--color-fg-muted); }
+.hq .legend span { display: inline-flex; align-items: center; gap: 4px; }
+.hq .sw { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+.hq .tablewrap { overflow-x: auto; max-width: 100%; }
+.hq table { border-collapse: collapse; width: 100%; font-size: var(--cds-font-size-caption); font-variant-numeric: tabular-nums; }
+.hq th, .hq td { padding: 5px 8px; text-align: right; border-bottom: 1px solid var(--color-border-line); white-space: nowrap; }
+.hq th { color: var(--color-fg-muted); font-weight: var(--cds-font-weight-medium); position: sticky; top: 0; background: var(--color-panel); }
+.hq th:first-child, .hq td:first-child, .hq td.l, .hq th.l { text-align: left; }
+.hq .pill { display: inline-block; padding: 1px 7px; border-radius: 999px; font-size: var(--cds-font-size-caption); border: 1px solid var(--color-border-line); }
+.hq .pill.bad { color: var(--color-bad); border-color: var(--color-bad); }
+.hq .pill.warn { color: var(--color-warn); border-color: var(--color-warn); }
+.hq .pill.ok { color: var(--color-ok); border-color: var(--color-ok); }
+.hq .row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--cds-gap-sm); }
+.hq .note { border-left: 2px solid var(--color-warn); padding-left: var(--cds-pad-sm); color: var(--color-fg-muted); font-size: var(--cds-font-size-caption); max-width: 80ch; }
+.hq a { color: inherit; }
+.hq details summary { cursor: pointer; color: var(--color-fg-muted); }
+.hq .scroll { max-height: 420px; overflow: auto; }
+[data-dash-source-state=refreshing] { opacity: .5; }
+</style>
+
+<div class="hq">
+  <header id="top" style="display:flex;flex-direction:column;gap:var(--cds-gap-sm)">
+    <h1>Holder Quality Scan</h1>
+    <p class="lede" id="takeaway">Of the wallets tagged SMART today, <b data-draw="t-pass" data-source="rep_summary" data-field="passed" data-row="0">—</b> of <b data-draw="t-smart" data-source="rep_summary" data-field="wallets" data-row="0">—</b> pass the copy test. Wallets already SMART 30 days ago returned a median <b data-draw="t-pit" data-source="rep_summary" data-field="median_net_roi" data-row="1">—</b> net over the next 30 days when mirrored at $400 with 1 c slippage. A tag is not a copy signal.</p>
+    <p class="muted">Run <span data-draw="run-at" data-source="run" data-field="run_at" data-row="0">—</span> · Polymarket Gamma + Data API v2 · top 20 holders per side · evidence, not accusations.</p>
+  </header>
+
+  <section id="snapshot">
+    <h2>Quick snapshot</h2>
+    <div class="tiles">
+      <div class="tile"><span class="v" data-draw="n-markets" data-source="run" data-field="markets" data-row="0">—</span><span class="l">Markets scanned</span></div>
+      <div class="tile"><span class="v" data-draw="n-wallets" data-source="run" data-field="wallets" data-row="0">—</span><span class="l">Distinct holder wallets</span></div>
+      <div class="tile"><span class="v" data-draw="n-smart" data-source="run" data-field="tag_smart" data-row="0">—</span><span class="l">SMART holder positions</span></div>
+      <div class="tile"><span class="v" data-draw="n-solid" data-source="run" data-field="tag_solid" data-row="0">—</span><span class="l">Solid holder positions</span></div>
+      <div class="tile"><span class="v" data-draw="n-ins" data-source="run" data-field="tag_insider_like" data-row="0">—</span><span class="l">Insider-like positions</span></div>
+      <div class="tile"><span class="v" data-draw="n-fresh" data-source="run" data-field="tag_watch_fresh" data-row="0">—</span><span class="l">Watch-fresh positions</span></div>
+      <div class="tile"><span class="v" data-draw="n-mm" data-source="run" data-field="tag_mm_arb" data-row="0">—</span><span class="l">Market maker / arb</span></div>
+      <div class="tile"><span class="v" data-draw="n-fail" data-source="run" data-field="api_failures" data-row="0">—</span><span class="l">API failures (not filled)</span></div>
+    </div>
+    <div class="row">
+      <span class="muted">Category mix:</span>
+      <span class="pill">Sports <b data-draw="c-sports" data-source="run" data-field="cat_sports" data-row="0">—</b></span>
+      <span class="pill">Crypto <b data-draw="c-crypto" data-source="run" data-field="cat_crypto" data-row="0">—</b></span>
+      <span class="pill">Politics <b data-draw="c-politics" data-source="run" data-field="cat_politics" data-row="0">—</b></span>
+      <span class="pill">Geopolitics <b data-draw="c-geo" data-source="run" data-field="cat_geopolitics" data-row="0">—</b></span>
+      <span class="pill">Macro <b data-draw="c-macro" data-source="run" data-field="cat_macro" data-row="0">—</b></span>
+    </div>
+    <p class="note">No Sports market met the $75k volume floor inside the 4-day window at run time (Monday morning; the largest, Chargers vs. Ravens, had about $61k). Category is the first matching Gamma tag, so ceasefire and tweet-count markets tagged Politics land in Politics.</p>
+  </section>
+
+  <section id="edge">
+    <h2>Edge diagnosis</h2>
+    <div class="grid2">
+      <div class="card" id="pnl-card">
+        <h3>90-day PnL change by wallet group</h3>
+        <p class="muted">Median change in cumulative PnL per wallet since 90 days ago. Group = tag of the wallet's largest scanned position.</p>
+        <div class="chart" data-draw="pnl-chart" data-source="pnl_curves"></div>
+        <div class="legend" data-draw="pnl-legend"></div>
+      </div>
+      <div class="card" id="lean-card">
+        <h3>Smart lean vs market price</h3>
+        <p class="muted">Each dot is one side of a market. Lean = SMART + solid shares on that side as a share of both sides (bots count half).</p>
+        <div class="chart" data-draw="lean-chart" data-source="markets"></div>
+      </div>
+      <div class="card" id="age-card">
+        <h3>Wallet age vs lifetime trades</h3>
+        <p class="muted">One dot per holder position, log scales. Fresh wallets with few trades sit bottom-left.</p>
+        <div class="chart" data-draw="age-chart" data-source="holders"></div>
+        <div class="legend" data-draw="age-legend"></div>
+      </div>
+      <div class="card" id="share-card">
+        <h3>Share of portfolio in this bet, by group</h3>
+        <p class="muted">Median and interquartile range of position value ÷ portfolio value.</p>
+        <div class="chart" data-draw="share-chart" data-source="holders"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="explorer">
+    <h2>Market explorer</h2>
+    <div class="row">
+      <label class="muted" for="mx-select">Market</label>
+      <select id="mx-select" class="dash-select" data-draw="mx-select" aria-label="Market" data-source="markets" style="max-width:100%"></select>
+    </div>
+    <p class="muted" data-draw="mx-meta" data-source="markets">—</p>
+    <div class="grid2">
+      <div class="card" id="mx-price-card">
+        <h3>Price, last 7 days, with holder entry prices</h3>
+        <p class="muted">Price of the first outcome. Dashes mark average entries of the 6 largest holders per side, shown in first-outcome terms.</p>
+        <div class="chart tall" data-draw="mx-price" data-source="prices holders"></div>
+      </div>
+      <div class="card" id="mx-flow-card">
+        <h3>Net flow into the first outcome, last 72 h</h3>
+        <p class="muted">Cumulative USD bought minus sold, by wallet group. Wallets outside the top-20 holders count as other.</p>
+        <div class="chart tall" data-draw="mx-flow" data-source="flow"></div>
+        <div class="legend" data-draw="mx-flow-legend"></div>
+      </div>
+    </div>
+    <div class="grid2">
+      <div class="card" id="mx-side0">
+        <h3 data-draw="mx-h0">—</h3>
+        <div class="tablewrap scroll">
+          <table data-source="holders" data-row-key="key">
+            <thead><tr><th class="l">Wallet</th><th class="l" data-field="tag">Tag</th><th data-field="shares">Shares</th><th data-field="avg_price">Entry</th><th data-field="cost">Cost $</th><th data-field="unrealized_pnl">uPnL $</th><th data-field="pct_bet">% of portfolio</th><th data-field="hours_held">Hours held</th><th data-field="age_days">Age (d)</th><th data-field="trades">Trades</th><th data-field="sharpe">Sharpe</th></tr></thead>
+            <tbody data-draw="mx-t0"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card" id="mx-side1">
+        <h3 data-draw="mx-h1">—</h3>
+        <div class="tablewrap scroll">
+          <table data-source="holders" data-row-key="key">
+            <thead><tr><th class="l">Wallet</th><th class="l" data-field="tag">Tag</th><th data-field="shares">Shares</th><th data-field="avg_price">Entry</th><th data-field="cost">Cost $</th><th data-field="unrealized_pnl">uPnL $</th><th data-field="pct_bet">% of portfolio</th><th data-field="hours_held">Hours held</th><th data-field="age_days">Age (d)</th><th data-field="trades">Trades</th><th data-field="sharpe">Sharpe</th></tr></thead>
+            <tbody data-draw="mx-t1"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="replication">
+    <h2>Replication test</h2>
+    <p>Every position each wallet settled in the last 30 days, mirrored pro-rata to $400 with 1 cent per share of entry slippage and no compounding. A wallet passes with 30+ positions, net ROI above 5%, one category at 60%+ of cost, and no single win above 40% of gains.</p>
+    <div class="tablewrap">
+      <table data-source="rep_summary" data-row-key="set">
+        <thead><tr><th class="l">Wallet set</th><th data-field="wallets">Wallets</th><th data-field="profitable">Profitable</th><th data-field="passed">Passed all</th><th data-field="median_net_roi">Median net ROI</th><th data-field="iqr_low">25th pct</th><th data-field="iqr_high">75th pct</th><th data-field="mean_end">Mean $400 →</th><th data-field="mean_end_ex_best">Without best wallet</th></tr></thead>
+        <tbody data-draw="rep-sum"></tbody>
+      </table>
+    </div>
+    <p class="note">The point-in-time row is the honest one: wallets were scored on data up to 30 days ago, then tested on the 30 days after. The first row reuses today's tags, which already include the test window. Both sets come from today's top holders, so wallets that stopped trading are missing (survivorship). Latency and fill quality are ignored, so both rows are an upper bound.</p>
+    <div class="row muted">Data check: settled-position coverage vs trade history, median <b data-draw="int-cov" data-source="integrity" data-field="median_coverage" data-row="0">—</b> (lowest <b data-draw="int-min" data-source="integrity" data-field="min_coverage" data-row="0">—</b>, over <b data-draw="int-n" data-source="integrity" data-field="wallets_with_full_activity" data-row="0">—</b> wallets with full history); median excess win <b data-draw="int-exc" data-source="integrity" data-field="median_excess_win_c" data-row="0">—</b> c/share.</div>
+    <div class="row">
+      <label class="muted" for="rep-filter">Show</label>
+      <select id="rep-filter" class="dash-select" aria-label="Replication filter" data-draw="rep-filter"></select>
+    </div>
+    <div class="tablewrap scroll">
+      <table data-source="replication" data-row-key="wallet_prefix">
+        <thead><tr><th class="l">Wallet</th><th class="l">Verdict</th><th data-field="positions">Positions</th><th data-field="events">Events</th><th data-field="win_rate">Win rate</th><th data-field="cost">Cost $</th><th data-field="net_roi">Net ROI</th><th data-field="mirror_end">$400 →</th><th class="l" data-field="main_category">Main category</th><th data-field="main_cat_share">Share</th><th data-field="best_win_share">Best win share</th><th data-field="coverage">Coverage</th></tr></thead>
+        <tbody data-draw="rep-table"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="risks">
+    <h2>Risks and red flags</h2>
+    <div class="tablewrap scroll">
+      <table data-source="signals">
+        <thead><tr><th class="l">Signal</th><th class="l">Market</th><th class="l">Side</th><th class="l">Detail</th></tr></thead>
+        <tbody data-draw="sig-table"></tbody>
+      </table>
+    </div>
+    <p class="note">"Insider-like" is a statistical pattern, never proof: new users and whales splitting capital look the same. Sharpe under 60 active days is shown as blank. Wallet specialization uses title keywords. Concentration counts only the top-20 holders on each side.</p>
+    <details>
+      <summary>API failures (<span data-draw="fail-n" data-source="run" data-field="api_failures" data-row="0">—</span>), reported and not filled</summary>
+      <div class="tablewrap"><table data-source="failures"><thead><tr><th class="l">Call</th><th class="l">Error</th></tr></thead><tbody data-draw="fail-table"></tbody></table></div>
+    </details>
+  </section>
+
+  <section id="action">
+    <h2>Actionable takeaway</h2>
+    <p>Watch-list rule: the side the smart wallets lean toward is priced under 50%, the lean is at least 75%, the market has traded at least $100k, and at least 3 smart wallets hold it. Use it to decide what to research, not what to copy.</p>
+    <ul data-draw="watch-list" data-source="signals markets" style="margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px"></ul>
+  </section>
+
+  <details>
+    <summary>Tag definitions</summary>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px;max-width:80ch" class="muted">
+      <p><b>no-basis</b>: 1,000+ shares at under $1 cost (transfers, contracts); ignored.</p>
+      <p><b>MM/arb</b>: holds both sides, or lifetime volume above $5M with absolute ROI under 0.5%.</p>
+      <p><b>INSIDER-LIKE</b>: pattern score 60+ of 100 on a ticket of at least $2,000 that is not a hedge. Points for a young wallet, few lifetime trades, this market being a large share of lifetime volume, a large ticket, and $3k+ bought at 30 c or less. 40–59 is watch-fresh.</p>
+      <p><b>SMART</b>: record score 70+ of 100 after a gate of 60 active days, 100 trades and $50k all-time PnL. Points for age, trades, PnL, ROI, Sharpe, winning days, positive 30-day windows, no single lucky day, and limited drawdown. 50–69 is solid. Above 20k fills marks a bot or quant, kept but counted at half weight in the lean.</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function () {
+  const TAGS = ['INSIDER-LIKE', 'watch-fresh', 'SMART', 'solid', 'MM/arb', 'no-basis', 'other'];
+  const color = (t) => dash.colors[Math.max(0, TAGS.indexOf(t)) % dash.colors.length];
+  const pct = d3.format('.0%'), pct1 = d3.format('+.1%'), num = d3.format(',.0f'), usd = d3.format(',.0f'), c2 = d3.format('.2f');
+  const fmt = (v, f) => (v === null || v === undefined || Number.isNaN(v) ? '' : f(v));
+  window.hqState = window.hqState || { market: null, repFilter: 'pit' };
+  const ok = (id) => dash.data(id).status === 'ok';
+  const who = (handle, prefix) => { const h = (handle || '').trim(); return !h || h.toLowerCase().startsWith('0x') ? prefix : (h.length > 18 ? h.slice(0, 17) + '…' : h) + ' (' + prefix + ')'; };
+  const rows = (id) => (ok(id) ? dash.data(id).data : []);
+
+  function legend(el, items) {
+    d3.select(el).selectAll(':scope > span.lg').data(items).join('span').attr('class', 'lg')
+      .each(function (d) {
+        const s = d3.select(this); s.selectAll('*').remove();
+        s.append('i').attr('class', 'sw').style('background', d.c); s.append('b').style('font-weight', 'normal').text(d.t);
+      });
+  }
+  function tip(el) {
+    let t = d3.select(el).select('div.tip');
+    if (t.empty()) t = d3.select(el).append('div').attr('class', 'tip').style('display', 'none');
+    return t;
+  }
+  function showTip(t, el, ev, text) {
+    const [x, y] = d3.pointer(ev, el);
+    t.style('display', null).text(text);
+    const w = el.clientWidth, tw = t.node().offsetWidth;
+    t.style('left', Math.min(Math.max(0, x + 10), w - tw) + 'px').style('top', Math.max(0, y - 30) + 'px');
+  }
+  function frame(el, h, ml) {
+    d3.select(el).selectAll('svg').remove();
+    const w = Math.max(280, el.clientWidth);
+    const m = { t: 10, r: 12, b: 26, l: ml || 48 };
+    const svg = d3.select(el).append('svg').attr('viewBox', `0 0 ${w} ${h}`).attr('width', '100%').attr('role', 'img');
+    return { svg, w, h, m, iw: w - m.l - m.r, ih: h - m.t - m.b };
+  }
+  function placeholder(el, id) {
+    d3.select(el).selectAll('svg').remove();
+    const s = dash.data(id).status;
+    d3.select(el).selectAll('p.ph').data([0]).join('p').attr('class', 'ph muted').text(s === 'error' ? 'Failed to load' : s === 'loading' ? '' : '—');
+  }
+  const clearPh = (el) => d3.select(el).selectAll('p.ph').remove();
+
+  // ------------------------------------------------ header + tiles
+  const val = (id, f, i = 0) => (el) => {
+    const d = dash.data(id);
+    if (d.status !== 'ok') { el.textContent = '—'; return; }
+    const r = d.data[i] || {};
+    el.textContent = f(r[el.dataset.field]);
+  };
+  const ident = (v) => (v === null || v === undefined ? '—' : String(v));
+  dash.draw('run-at', val('run', ident));
+  ['n-markets', 'n-wallets', 'n-smart', 'n-solid', 'n-ins', 'n-fresh', 'n-mm', 'n-fail', 'c-sports', 'c-crypto', 'c-politics', 'c-geo', 'c-macro', 'fail-n']
+    .forEach((n) => dash.draw(n, val('run', (v) => (v === undefined || v === null ? '—' : num(v)))));
+  dash.draw('t-pass', val('rep_summary', (v) => num(v), 0));
+  dash.draw('t-smart', val('rep_summary', (v) => num(v), 0));
+  dash.draw('t-pit', (el) => val('rep_summary', (v) => (v === null || v === undefined ? '—' : pct1(v)), 1)(el));
+  dash.draw('int-cov', val('integrity', (v) => (v == null ? '—' : pct(v))));
+  dash.draw('int-min', val('integrity', (v) => (v == null ? '—' : pct(v))));
+  dash.draw('int-n', val('integrity', (v) => (v == null ? '—' : num(v))));
+  dash.draw('int-exc', val('integrity', (v) => (v == null ? '—' : d3.format('+.1f')(v))));
+
+  // ------------------------------------------------ PnL curves
+  dash.draw('pnl-chart', (el) => {
+    if (!ok('pnl_curves')) return placeholder(el, 'pnl_curves');
+    clearPh(el);
+    const data = rows('pnl_curves').map((r) => ({ ...r, d: new Date(r.date + 'T00:00:00Z') }));
+    const groups = TAGS.filter((t) => data.some((r) => r.group === t));
+    const f = frame(el, 240, 56);
+    f.svg.attr('aria-label', 'Median 90-day PnL change per wallet, one line per wallet group');
+    const x = d3.scaleUtc().domain(d3.extent(data, (r) => r.d)).range([f.m.l, f.w - f.m.r]);
+    const y = d3.scaleLinear().domain(d3.extent([0, ...data.map((r) => r.median_pnl)])).nice().range([f.h - f.m.b, f.m.t]);
+    f.svg.append('g').attr('class', 'grid').attr('transform', `translate(${f.m.l},0)`).call(d3.axisLeft(y).ticks(5).tickSize(-f.iw).tickFormat('')).call((g) => g.select('.domain').remove());
+    f.svg.append('g').attr('transform', `translate(0,${f.h - f.m.b})`).call(d3.axisBottom(x).ticks(Math.max(2, Math.floor(f.iw / 90))).tickFormat(d3.utcFormat('%d %b')));
+    f.svg.append('g').attr('transform', `translate(${f.m.l},0)`).call(d3.axisLeft(y).ticks(5).tickFormat(d3.format('~s')));
+    f.svg.append('line').attr('x1', f.m.l).attr('x2', f.w - f.m.r).attr('y1', y(0)).attr('y2', y(0)).style('stroke', 'var(--cds-chart-reference)');
+    const line = d3.line().x((r) => x(r.d)).y((r) => y(r.median_pnl));
+    groups.forEach((g) => {
+      const s = data.filter((r) => r.group === g);
+      f.svg.append('path').datum(s).attr('d', line).style('fill', 'none').style('stroke', color(g)).style('stroke-width', 1.8);
+      const last = s[s.length - 1];
+      f.svg.append('circle').attr('cx', x(last.d)).attr('cy', y(last.median_pnl)).attr('r', 3).style('fill', color(g));
+    });
+    const t = tip(el);
+    f.svg.append('rect').attr('x', f.m.l).attr('y', f.m.t).attr('width', f.iw).attr('height', f.ih).style('fill', 'transparent')
+      .on('pointermove', (ev) => {
+        const xd = x.invert(d3.pointer(ev)[0]);
+        const day = d3.utcFormat('%Y-%m-%d')(xd);
+        const at = data.filter((r) => r.date === day);
+        showTip(t, el, ev, day + ' · ' + at.map((r) => `${r.group} ${d3.format('$,.0f')(r.median_pnl)} (n=${r.wallets})`).join(' · '));
+      }).on('pointerleave', () => t.style('display', 'none'));
+  });
+  dash.draw('pnl-legend', (el) => legend(el, TAGS.filter((t) => rows('pnl_curves').some((r) => r.group === t)).map((t) => ({ t, c: color(t) }))));
+
+  // ------------------------------------------------ lean vs price
+  dash.draw('lean-chart', (el) => {
+    if (!ok('markets')) return placeholder(el, 'markets');
+    clearPh(el);
+    const pts = [];
+    rows('markets').forEach((m) => [0, 1].forEach((i) => {
+      if (m['smart_lean' + i] !== null && m['smart_lean' + i] !== undefined) pts.push({ m, i, price: m['price' + i], lean: m['smart_lean' + i], n: m['n_smart' + i], out: m['outcome' + i] });
+    }));
+    const f = frame(el, 240, 44);
+    f.svg.attr('aria-label', 'Scatter of smart lean against market price for each market side');
+    const x = d3.scaleLinear().domain([0, 1]).range([f.m.l, f.w - f.m.r]);
+    const y = d3.scaleLinear().domain([0, 1]).range([f.h - f.m.b, f.m.t]);
+    f.svg.append('rect').attr('x', x(0)).attr('y', y(1)).attr('width', x(0.5) - x(0)).attr('height', y(0.75) - y(1)).style('fill', 'var(--cds-chart-muted)').style('opacity', 0.25);
+    f.svg.append('g').attr('transform', `translate(0,${f.h - f.m.b})`).call(d3.axisBottom(x).ticks(5).tickFormat(pct));
+    f.svg.append('g').attr('transform', `translate(${f.m.l},0)`).call(d3.axisLeft(y).ticks(5).tickFormat(pct));
+    f.svg.append('line').attr('x1', x(0)).attr('y1', y(0)).attr('x2', x(1)).attr('y2', y(1)).style('stroke', 'var(--cds-chart-reference)').style('stroke-dasharray', '3 3');
+    const t = tip(el);
+    f.svg.selectAll('circle.p').data(pts).join('circle').attr('class', 'p').attr('cx', (d) => x(d.price)).attr('cy', (d) => y(d.lean))
+      .attr('r', (d) => 3 + Math.min(5, d.n)).style('fill', dash.colors[0]).style('opacity', 0.75)
+      .on('pointermove', (ev, d) => showTip(t, el, ev, `${d.m.question.slice(0, 60)} · ${d.out} · price ${pct(d.price)} · lean ${pct(d.lean)} · ${d.n} smart`))
+      .on('pointerleave', () => t.style('display', 'none'));
+    f.svg.append('text').attr('x', x(0.01)).attr('y', y(0.97)).text('watch zone').style('font-size', 'var(--cds-font-size-caption)');
+  });
+
+  // ------------------------------------------------ age vs trades
+  dash.draw('age-chart', (el) => {
+    if (!ok('holders')) return placeholder(el, 'holders');
+    clearPh(el);
+    const pts = rows('holders').filter((r) => r.age_days > 0 && r.trades > 0 && r.tag !== 'no-basis');
+    const f = frame(el, 240, 44);
+    f.svg.attr('aria-label', 'Scatter of wallet age against lifetime trades, coloured by tag');
+    const x = d3.scaleLog().domain([0.5, d3.max(pts, (r) => r.age_days) || 1000]).range([f.m.l, f.w - f.m.r]).clamp(true);
+    const y = d3.scaleLog().domain([1, d3.max(pts, (r) => r.trades) || 1e5]).range([f.h - f.m.b, f.m.t]).clamp(true);
+    f.svg.append('g').attr('transform', `translate(0,${f.h - f.m.b})`).call(d3.axisBottom(x).ticks(4, '~s'));
+    f.svg.append('g').attr('transform', `translate(${f.m.l},0)`).call(d3.axisLeft(y).ticks(4, '~s'));
+    f.svg.append('text').attr('x', f.w - f.m.r).attr('y', f.h - f.m.b - 4).attr('text-anchor', 'end').text('age, days');
+    const t = tip(el);
+    const order = ['other', 'MM/arb', 'solid', 'SMART', 'watch-fresh', 'INSIDER-LIKE'];
+    pts.sort((a, b) => order.indexOf(a.tag) - order.indexOf(b.tag));
+    f.svg.selectAll('circle').data(pts).join('circle').attr('cx', (d) => x(Math.max(0.5, d.age_days))).attr('cy', (d) => y(Math.max(1, d.trades)))
+      .attr('r', 3).style('fill', (d) => color(d.tag)).style('opacity', (d) => (d.tag === 'other' ? 0.35 : 0.85))
+      .on('pointermove', (ev, d) => showTip(t, el, ev, `${d.handle || d.wallet} · ${d.tag} · ${num(d.age_days)} d · ${num(d.trades)} trades`))
+      .on('pointerleave', () => t.style('display', 'none'));
+  });
+  dash.draw('age-legend', (el) => legend(el, TAGS.filter((t) => t !== 'no-basis').map((t) => ({ t, c: color(t) }))));
+
+  // ------------------------------------------------ portfolio share by group
+  dash.draw('share-chart', (el) => {
+    if (!ok('holders')) return placeholder(el, 'holders');
+    clearPh(el);
+    const groups = TAGS.filter((t) => t !== 'no-basis').map((g) => {
+      const v = rows('holders').filter((r) => r.tag === g && r.pct_bet !== null && r.pct_bet !== undefined).map((r) => Math.min(1, r.pct_bet)).sort(d3.ascending);
+      return { g, n: v.length, q1: d3.quantileSorted(v, 0.25), med: d3.quantileSorted(v, 0.5), q3: d3.quantileSorted(v, 0.75) };
+    }).filter((d) => d.n);
+    const f = frame(el, 240, 96);
+    f.svg.attr('aria-label', 'Median and interquartile range of portfolio share in the bet for each wallet group');
+    const x = d3.scaleLinear().domain([0, 1]).range([f.m.l, f.w - f.m.r]);
+    const y = d3.scaleBand().domain(groups.map((d) => d.g)).range([f.m.t, f.h - f.m.b]).padding(0.35);
+    f.svg.append('g').attr('class', 'grid').attr('transform', `translate(0,${f.h - f.m.b})`).call(d3.axisBottom(x).ticks(5).tickSize(-(f.ih)).tickFormat('')).call((g) => g.select('.domain').remove());
+    f.svg.append('g').attr('transform', `translate(0,${f.h - f.m.b})`).call(d3.axisBottom(x).ticks(5).tickFormat(pct));
+    f.svg.append('g').attr('transform', `translate(${f.m.l},0)`).call(d3.axisLeft(y).tickSize(0)).call((g) => g.select('.domain').remove());
+    const t = tip(el);
+    const gs = f.svg.selectAll('g.b').data(groups).join('g').attr('class', 'b');
+    gs.append('rect').attr('x', (d) => x(d.q1)).attr('width', (d) => Math.max(2, x(d.q3) - x(d.q1))).attr('y', (d) => y(d.g)).attr('height', y.bandwidth()).style('fill', (d) => color(d.g)).style('opacity', 0.45);
+    gs.append('line').attr('x1', (d) => x(d.med)).attr('x2', (d) => x(d.med)).attr('y1', (d) => y(d.g)).attr('y2', (d) => y(d.g) + y.bandwidth()).style('stroke', (d) => color(d.g)).style('stroke-width', 3);
+    gs.append('text').attr('x', (d) => Math.min(x(d.q3) + 6, f.w - f.m.r - 60)).attr('y', (d) => y(d.g) + y.bandwidth() / 2 + 4).text((d) => `${pct(d.med)} (n=${d.n})`);
+    gs.on('pointermove', (ev, d) => showTip(t, el, ev, `${d.g}: median ${pct(d.med)}, IQR ${pct(d.q1)}–${pct(d.q3)}, n=${d.n}`)).on('pointerleave', () => t.style('display', 'none'));
+  });
+
+  // ------------------------------------------------ market explorer
+  const curMarket = () => {
+    const ms = rows('markets');
+    if (!ms.length) return null;
+    return ms.find((m) => m.condition_id === hqState.market) || ms[0];
+  };
+  dash.draw('mx-select', (sel) => {
+    const ms = rows('markets').slice().sort((a, b) => d3.ascending(a.category, b.category) || d3.ascending(a.end_date, b.end_date));
+    sel.replaceChildren();
+    d3.groups(ms, (m) => m.category).forEach(([cat, list]) => {
+      const og = document.createElement('optgroup'); og.label = cat;
+      list.forEach((m) => og.append(new Option(`${m.end_date.slice(0, 10)} · ${m.question}`, m.condition_id)));
+      sel.append(og);
+    });
+    const m = curMarket();
+    if (m) sel.value = m.condition_id;
+    sel.onchange = () => { hqState.market = sel.value; ['mx-meta', 'mx-price', 'mx-flow', 'mx-flow-legend', 'mx-h0', 'mx-h1', 'mx-t0', 'mx-t1'].forEach((n) => dash.draw(n)); };
+  });
+  dash.draw('mx-meta', (el) => {
+    const m = curMarket();
+    if (!m) { el.textContent = '—'; return; }
+    el.replaceChildren();
+    const a = document.createElement('a'); a.href = m.url; a.target = '_blank'; a.rel = 'noopener'; a.textContent = m.event;
+    el.append(a, document.createTextNode(` · ${m.category} · ends ${m.end_date.slice(0, 16).replace('T', ' ')} UTC · volume $${usd(m.volume)} · ${m.outcome0} ${pct(m.price0)} / ${m.outcome1} ${pct(m.price1)} · ${num(m.trades_72h)} trades in 72 h, ${m.holder_flow_coverage == null ? '—' : pct(m.holder_flow_coverage)} of USD flow from top holders`));
+  });
+  dash.draw('mx-price', (el) => {
+    const m = curMarket();
+    if (!m || !ok('prices')) return placeholder(el, 'prices');
+    clearPh(el);
+    const ps = rows('prices').filter((r) => r.condition_id === m.condition_id).map((r) => ({ d: new Date(r.ts * 1000), p: r.price }));
+    const hs = rows('holders').filter((r) => r.condition_id === m.condition_id && r.avg_price != null && r.tag !== 'no-basis');
+    const entries = [0, 1].flatMap((s) => hs.filter((r) => r.side === s).sort((a, b) => b.cost - a.cost).slice(0, 6).map((r) => ({ ...r, p0: s === 0 ? r.avg_price : 1 - r.avg_price })));
+    const f = frame(el, 280, 44);
+    f.svg.attr('aria-label', `Hourly price of ${m.outcome0} over 7 days with holder entry prices`);
+    if (!ps.length) { f.svg.append('text').attr('x', f.m.l).attr('y', 40).text('No price history returned'); return; }
+    const x = d3.scaleUtc().domain(d3.extent(ps, (r) => r.d)).range([f.m.l, f.w - f.m.r - 70]);
+    const lo = d3.min([...ps.map((r) => r.p), ...entries.map((e) => e.p0)]), hi = d3.max([...ps.map((r) => r.p), ...entries.map((e) => e.p0)]);
+    const y = d3.scaleLinear().domain([Math.max(0, lo - 0.03), Math.min(1, hi + 0.03)]).nice().range([f.h - f.m.b, f.m.t]);
+    f.svg.append('g').attr('class', 'grid').attr('transform', `translate(${f.m.l},0)`).call(d3.axisLeft(y).ticks(5).tickSize(-(x.range()[1] - f.m.l)).tickFormat('')).call((g) => g.select('.domain').remove());
+    f.svg.append('g').attr('transform', `translate(0,${f.h - f.m.b})`).call(d3.axisBottom(x).ticks(Math.max(2, Math.floor(f.iw / 90))).tickFormat(d3.utcFormat('%d %b')));
+    f.svg.append('g').attr('transform', `translate(${f.m.l},0)`).call(d3.axisLeft(y).ticks(5).tickFormat(pct));
+    const t = tip(el);
+    f.svg.selectAll('line.e').data(entries).join('line').attr('class', 'e').attr('x1', f.m.l).attr('x2', x.range()[1]).attr('y1', (d) => y(d.p0)).attr('y2', (d) => y(d.p0))
+      .style('stroke', (d) => color(d.tag)).style('stroke-dasharray', (d) => (d.side === 0 ? '6 3' : '2 3')).style('stroke-width', 1.2).style('opacity', 0.8)
+      .on('pointermove', (ev, d) => showTip(t, el, ev, `${d.handle || d.wallet} · ${d.tag} · ${d.side === 0 ? m.outcome0 : m.outcome1} entry ${c2(d.avg_price)} · $${usd(d.cost)}`))
+      .on('pointerleave', () => t.style('display', 'none'));
+    f.svg.append('path').datum(ps).attr('d', d3.line().x((r) => x(r.d)).y((r) => y(r.p))).style('fill', 'none').style('stroke', 'var(--color-fg)').style('stroke-width', 1.8);
+    const last = ps[ps.length - 1];
+    f.svg.append('circle').attr('cx', x(last.d)).attr('cy', y(last.p)).attr('r', 3.5).style('fill', 'var(--color-fg)');
+    f.svg.append('text').attr('x', x(last.d) + 6).attr('y', y(last.p) + 4).text(`${m.outcome0} ${pct(last.p)}`);
+    f.svg.append('rect').attr('x', f.m.l).attr('y', f.m.t).attr('width', x.range()[1] - f.m.l).attr('height', f.ih).style('fill', 'transparent').lower()
+      .on('pointermove', (ev) => { const xd = x.invert(d3.pointer(ev)[0]); const i = d3.bisector((r) => r.d).center(ps, xd); showTip(t, el, ev, `${d3.utcFormat('%d %b %H:%M')(ps[i].d)} UTC · ${m.outcome0} ${pct(ps[i].p)}`); })
+      .on('pointerleave', () => t.style('display', 'none'));
+  });
+  dash.draw('mx-flow', (el) => {
+    const m = curMarket();
+    if (!m || !ok('flow')) return placeholder(el, 'flow');
+    clearPh(el);
+    const fl = rows('flow').filter((r) => r.condition_id === m.condition_id).map((r) => ({ ...r, d: new Date(r.ts * 1000) }));
+    const f = frame(el, 280, 56);
+    f.svg.attr('aria-label', `Cumulative net USD flow into ${m.outcome0} over 72 hours by wallet group`);
+    if (!fl.length) { f.svg.append('text').attr('x', f.m.l).attr('y', 40).text('No trades in the last 72 h'); return; }
+    const x = d3.scaleUtc().domain(d3.extent(fl, (r) => r.d)).range([f.m.l, f.w - f.m.r]);
+    const y = d3.scaleLinear().domain(d3.extent([0, ...fl.map((r) => r.cum_usd)])).nice().range([f.h - f.m.b, f.m.t]);
+    f.svg.append('g').attr('class', 'grid').attr('transform', `translate(${f.m.l},0)`).call(d3.axisLeft(y).ticks(5).tickSize(-f.iw).tickFormat('')).call((g) => g.select('.domain').remove());
+    f.svg.append('g').attr('transform', `translate(0,${f.h - f.m.b})`).call(d3.axisBottom(x).ticks(Math.max(2, Math.floor(f.iw / 90))).tickFormat(d3.utcFormat('%d %b %H:00')));
+    f.svg.append('g').attr('transform', `translate(${f.m.l},0)`).call(d3.axisLeft(y).ticks(5).tickFormat(d3.format('~s')));
+    f.svg.append('line').attr('x1', f.m.l).attr('x2', f.w - f.m.r).attr('y1', y(0)).attr('y2', y(0)).style('stroke', 'var(--cds-chart-reference)');
+    const groups = TAGS.filter((g) => fl.some((r) => r.group === g));
+    groups.forEach((g) => f.svg.append('path').datum(fl.filter((r) => r.group === g)).attr('d', d3.line().x((r) => x(r.d)).y((r) => y(r.cum_usd)))
+      .style('fill', 'none').style('stroke', color(g)).style('stroke-width', g === 'other' ? 1.2 : 1.8));
+    const t = tip(el);
+    f.svg.append('rect').attr('x', f.m.l).attr('y', f.m.t).attr('width', f.iw).attr('height', f.ih).style('fill', 'transparent')
+      .on('pointermove', (ev) => { const ts = +x.invert(d3.pointer(ev)[0]); const at = groups.map((g) => { const s = fl.filter((r) => r.group === g); const i = d3.bisector((r) => r.d).center(s, ts); return s[i]; }); showTip(t, el, ev, d3.utcFormat('%d %b %H:00')(at[0].d) + ' · ' + at.map((r) => `${r.group} ${d3.format('$,.0f')(r.cum_usd)}`).join(' · ')); })
+      .on('pointerleave', () => t.style('display', 'none'));
+  });
+  dash.draw('mx-flow-legend', (el) => { const m = curMarket(); legend(el, m ? TAGS.filter((g) => rows('flow').some((r) => r.condition_id === m.condition_id && r.group === g)).map((t) => ({ t, c: color(t) })) : []); });
+  const sideHead = (i) => (el) => { const m = curMarket(); el.textContent = m ? `${m['outcome' + i]} holders · ${pct(m['price' + i])} · weighted entry ${m['wavg_entry' + i] == null ? '—' : c2(m['wavg_entry' + i])} · top-5 ${m['top5_share' + i] == null ? '—' : pct(m['top5_share' + i])} · smart lean ${m['smart_lean' + i] == null ? '—' : pct(m['smart_lean' + i])}` : '—'; };
+  dash.draw('mx-h0', sideHead(0));
+  dash.draw('mx-h1', sideHead(1));
+  const pill = (tag) => { const s = document.createElement('span'); s.className = 'pill' + (tag === 'INSIDER-LIKE' ? ' bad' : tag === 'watch-fresh' ? ' warn' : tag === 'SMART' ? ' ok' : ''); s.textContent = tag; return s; };
+  const holderTable = (i) => (tb) => {
+    const m = curMarket();
+    const hs = m ? rows('holders').filter((r) => r.condition_id === m.condition_id && r.side === i).sort((a, b) => b.shares - a.shares) : [];
+    tb.replaceChildren(...hs.map((r) => {
+      const tr = document.createElement('tr'); tr.dataset.key = r.key;
+      const cells = [who(r.handle, r.wallet), null, num(r.shares), fmt(r.avg_price, c2), usd(r.cost), fmt(r.unrealized_pnl, d3.format(',.0f')), fmt(r.pct_bet, pct), fmt(r.hours_held, num), fmt(r.age_days, num), fmt(r.trades, num), fmt(r.sharpe, d3.format('.1f'))];
+      cells.forEach((c, k) => { const td = document.createElement('td'); if (k <= 1) td.className = 'l'; if (k === 1) { td.append(pill(r.tag)); if (r.systematic) td.append(document.createTextNode(' bot')); if (r.strong_flag) td.append(document.createTextNode(' ▲')); } else td.textContent = c; tr.append(td); });
+      return tr;
+    }));
+  };
+  dash.draw('mx-t0', holderTable(0));
+  dash.draw('mx-t1', holderTable(1));
+
+  // ------------------------------------------------ replication
+  dash.draw('rep-sum', (tb) => {
+    const rs = rows('rep_summary');
+    tb.replaceChildren(...rs.map((r) => {
+      const tr = document.createElement('tr'); tr.dataset.key = encodeURIComponent(r.set);
+      [r.set, num(r.wallets), num(r.profitable), num(r.passed), fmt(r.median_net_roi, pct1), fmt(r.iqr_low, pct1), fmt(r.iqr_high, pct1), fmt(r.mean_end, d3.format('$,.0f')), fmt(r.mean_end_ex_best, d3.format('$,.0f'))]
+        .forEach((c, k) => { const td = document.createElement('td'); if (!k) td.className = 'l'; td.textContent = c; tr.append(td); });
+      return tr;
+    }));
+  });
+  dash.draw('rep-filter', (sel) => {
+    sel.replaceChildren(new Option('SMART as of 30 days ago', 'pit'), new Option('Tagged SMART today', 'now'), new Option('Passed only', 'pass'));
+    sel.value = hqState.repFilter;
+    sel.onchange = () => { hqState.repFilter = sel.value; dash.draw('rep-table'); };
+  });
+  dash.draw('rep-table', (tb) => {
+    let rs = rows('replication');
+    rs = rs.filter((r) => (hqState.repFilter === 'pit' ? r.smart_pit : hqState.repFilter === 'now' ? r.smart_now : r.pass)).sort((a, b) => (b.net_roi ?? -9) - (a.net_roi ?? -9));
+    tb.replaceChildren(...rs.map((r) => {
+      const tr = document.createElement('tr'); tr.dataset.key = r.wallet_prefix;
+      const v = document.createElement('span'); v.className = 'pill ' + (r.pass ? 'ok' : 'bad'); v.textContent = r.pass ? 'pass' : 'fail';
+      const cells = [who(r.handle, r.wallet_prefix) + (r.systematic ? ' bot' : ''), null, num(r.positions), num(r.events), fmt(r.win_rate, pct), fmt(r.cost, usd), fmt(r.net_roi, pct1), fmt(r.mirror_end, d3.format('$,.0f')), r.main_category || '', fmt(r.main_cat_share, pct), fmt(r.best_win_share, pct), fmt(r.coverage, pct)];
+      cells.forEach((c, k) => { const td = document.createElement('td'); if (k <= 1 || k === 8) td.className = 'l'; if (k === 1) { td.append(v); if (!r.pass) td.append(document.createTextNode(' ' + (r.verdict || ''))); } else td.textContent = c; tr.append(td); });
+      return tr;
+    }));
+  });
+
+  // ------------------------------------------------ signals, failures, watch-list
+  const qOf = (cid) => (rows('markets').find((m) => m.condition_id === cid) || {}).question || cid.slice(0, 10);
+  dash.draw('sig-table', (tb) => {
+    const order = ['Watch-list', 'Fresh-wallet cluster', 'Flow divergence', 'Concentrated insider-like wallet', 'Concentration'];
+    const rs = rows('signals').slice().sort((a, b) => order.indexOf(a.type) - order.indexOf(b.type));
+    tb.replaceChildren(...rs.map((r) => {
+      const tr = document.createElement('tr');
+      [r.type, qOf(r.condition_id), r.side, r.detail].forEach((c) => { const td = document.createElement('td'); td.className = 'l'; td.style.whiteSpace = 'normal'; td.textContent = c; tr.append(td); });
+      return tr;
+    }));
+  });
+  dash.draw('fail-table', (tb) => {
+    tb.replaceChildren(...rows('failures').map((r) => { const tr = document.createElement('tr'); [r.what, r.error].forEach((c) => { const td = document.createElement('td'); td.className = 'l'; td.style.whiteSpace = 'normal'; td.textContent = c; tr.append(td); }); return tr; }));
+  });
+  dash.draw('watch-list', (ul) => {
+    const ws = rows('signals').filter((r) => r.type === 'Watch-list');
+    if (!ws.length) { const li = document.createElement('li'); li.textContent = ok('signals') ? 'No market meets the rule in this run.' : '—'; ul.replaceChildren(li); return; }
+    ul.replaceChildren(...ws.map((r) => {
+      const m = rows('markets').find((x) => x.condition_id === r.condition_id) || {};
+      const li = document.createElement('li');
+      const a = document.createElement('a'); a.href = m.url || '#'; a.target = '_blank'; a.rel = 'noopener'; a.textContent = m.question || r.condition_id;
+      li.append(a, document.createTextNode(` · ${r.side}: ${r.detail}. Next: read the resolution rule, check the smart wallets' replication rows, paper-track the side.`));
+      return li;
+    }));
+  });
+})();
+</script>
