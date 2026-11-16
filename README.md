@@ -19,6 +19,7 @@ src/pmkt/
   fees.py               taker fee model
   storage.py            immutable Parquet lake + DuckDB views + cursors
 sql/schema.sql          relational layer design (Postgres)
+prompts/                operating prompts: desk charter + task modules (see prompts/README.md)
 scripts/validate_book.py  live check: reconstructed books vs REST /book
 ```
 Data lake: `data/raw/{dataset}/dt=YYYY-MM-DD/*.parquet` (git-ignored). Datasets: `gamma_markets`,

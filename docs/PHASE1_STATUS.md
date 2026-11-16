@@ -59,6 +59,6 @@ Smart positioning covers almost no screener markets yet: only 68 wallets qualify
   tweet counts, price levels): 428k trades (17%) were silently dropped. Backfilled from Gamma final prices
   (`fetch_activity.backfill_null_payouts`). Re-run: 1.69M resolved trades, 109.6k events, bias check +0.78c.
 - Main model unchanged in substance: PnL skill predictive (+0.16), not tradable (-2.4c net).
-- Playbook claims (docs/OPERATING_PROMPT.md evidence table): specialization raises persistence (+0.25; esports +0.32)
+- Playbook claims (prompts/00_desk_charter.md evidence table): specialization raises persistence (+0.25; esports +0.32)
   but no selection clears copy costs; $400 copy medians $76-$232; case-study selection 28% profitable, mean carried by
   one wallet; win rate useless (+0.05). Crypto Up/Down: 15m/4h = Chainlink 60s TWAP, daily = Binance 1m close.
