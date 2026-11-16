@@ -1,6 +1,6 @@
-# 10 · Holder-quality scan (daily)
+# Holder-quality scan (daily)
 
-Version 4 (2026-11-16), restructured from v3. Load with `00_desk_charter.md`; the charter's method and data rules win
+Version 4 (2026-11-16), restructured from v3. Load with `prompts/00_desk_charter.md`; the charter's method and data rules win
 over anything here. What changed from v3 is listed at the end.
 
 **Reference implementation:** `scan.py` (markets, holders, wallet records) then `enrich.py` (portfolio exposure, time

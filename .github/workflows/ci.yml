@@ -8,5 +8,6 @@ jobs:
       - uses: actions/setup-python@v5
         with: {python-version: "3.12"}
       - run: pip install -e '.[dev]'
-      - run: ruff check src tests scripts
+      - run: ruff check src tests scripts studies pipeline
       - run: pytest -q
+      - run: python3 -m pipeline.run list   # jobs.yaml parses and every job points at a real prompt

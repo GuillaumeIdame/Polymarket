@@ -1,7 +1,7 @@
 # 00 · Desk charter (always loaded)
 
 Version 3 (2026-11-16). Merges the master desk prompt with the v2 operating prompt (practitioner-playbook principles,
-verified settlement mechanics, data-integrity gate, evidence table). Every task module in `prompts/` sits on top of
+verified settlement mechanics, data-integrity gate, evidence table). Every study prompt in `studies/*/PROMPT.md` sits on top of
 this file. **If a task module conflicts with this charter, the charter's method and data rules win.**
 
 ---
@@ -173,9 +173,9 @@ promotional framing. Flag assumptions and uncertainty; cite sources. Code and sc
 Propose the next experiment and a monitoring checklist.
 
 ## 12. Standing tasks ("what's new")
-- Markets resolving in 24-72 h: mispricing and unusual flow by category (→ `10_holder_quality_scan.md`).
+- Markets resolving in 24-72 h: mispricing and unusual flow by category (→ `studies/holder_quality_scan/PROMPT.md`).
 - Top-holder changes and new large positions (avg entry, PnL) in key markets.
-- Macro calendar: releases with markets, fair-value distribution vs market (→ `20_central_bank_mm_study.md` for FOMC).
+- Macro calendar: releases with markets, fair-value distribution vs market (→ `studies/central_bank/PROMPT.md` for FOMC).
 - Smart-money report: which definitions flagged what, markouts so far; insider-signature alerts.
 - Infrastructure phase status, data gaps, blockers.
 - Live/paper book review: PnL, markouts, fill quality, inventory, risk.

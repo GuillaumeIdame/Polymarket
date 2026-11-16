@@ -1,0 +1,378 @@
+{
+ "resolved_at": "2026-11-16T07:52:28Z",
+ "outcomes": [
+  {
+   "meeting": "Dec-2026",
+   "meeting_date": "2026-12-09",
+   "event_slug": "fed-decision-in-december-20260729232808632",
+   "event_url": "https://polymarket.com/event/fed-decision-in-december-20260729232808632",
+   "outcome": "50+ bps decrease",
+   "bp": -50,
+   "condition_id": "0xb9aee520bf51ac5f00b5c43e54ef9245bc9fcdef866ce8a33025f9a441cc651d",
+   "yes_token": "17640596861394454242836532536014033416733783473450136742726948856144855149507",
+   "no_token": "104236736263775307891497202874191911203963566711959725788584750440530976742193",
+   "tick_size": 0.001,
+   "fee_schedule": {
+    "exponent": 1,
+    "rate": 0.05,
+    "takerOnly": true,
+    "rebateRate": 0.25
+   },
+   "fees_enabled": true,
+   "volume": 4985394.252061,
+   "end_date": "2026-12-09T23:59:00Z",
+   "rw_rate_per_day": null
+  },
+  {
+   "meeting": "Dec-2026",
+   "meeting_date": "2026-12-09",
+   "event_slug": "fed-decision-in-december-20260729232808632",
+   "event_url": "https://polymarket.com/event/fed-decision-in-december-20260729232808632",
+   "outcome": "25 bps decrease",
+   "bp": -25,
+   "condition_id": "0xf17ad24eb4ad57926495b114149c765b9b95bc286eadc91cbbfa901ceb10d0b8",
+   "yes_token": "77367448845023382525249480243608609306658725883285195065573683809293972009019",
+   "no_token": "23677896678650147625251750117853328843601853501710889530409633595389256242910",
+   "tick_size": 0.001,
+   "fee_schedule": {
+    "exponent": 1,
+    "rate": 0.05,
+    "takerOnly": true,
+    "rebateRate": 0.25
+   },
+   "fees_enabled": true,
+   "volume": 5738745.237574999,
+   "end_date": "2026-12-09T23:59:00Z",
+   "rw_rate_per_day": null
+  },
+  {
+   "meeting": "Dec-2026",
+   "meeting_date": "2026-12-09",
+   "event_slug": "fed-decision-in-december-20260729232808632",
+   "event_url": "https://polymarket.com/event/fed-decision-in-december-20260729232808632",
+   "outcome": "No change",
+   "bp": 0,
+   "condition_id": "0x723822eb2b143cee54c0bd7c1efba322b21f0051984c266df8879c394f1011c0",
+   "yes_token": "42865728742506860386768556888821101266630139112044622335353850919229585308601",
+   "no_token": "8077351031134730167836761678618167504307708651130165095377248922919635337796",
+   "tick_size": 0.001,
+   "fee_schedule": {
+    "exponent": 1,
+    "rate": 0.05,
+    "takerOnly": true,
+    "rebateRate": 0.25
+   },
+   "fees_enabled": true,
+   "volume": 8429420.055567997,
+   "end_date": "2026-12-09T23:59:00Z",
+   "rw_rate_per_day": null
+  },
+  {
+   "meeting": "Dec-2026",
+   "meeting_date": "2026-12-09",
+   "event_slug": "fed-decision-in-december-20260729232808632",
+   "event_url": "https://polymarket.com/event/fed-decision-in-december-20260729232808632",
+   "outcome": "25 bps increase",
+   "bp": 25,
+   "condition_id": "0x8a4196617dcb703e49d9bb36d3847bf6a75fd364dbd19f8d408ac944bf1a03d8",
+   "yes_token": "111662129652828266889360374468657435151479595863413519836161861837506140152890",
+   "no_token": "94483965432909797688470702512207472940215538148754820061518518664128018848687",
+   "tick_size": 0.01,
+   "fee_schedule": {
+    "exponent": 1,
+    "rate": 0.05,
+    "takerOnly": true,
+    "rebateRate": 0.25
+   },
+   "fees_enabled": true,
+   "volume": 8983942.233779,
+   "end_date": "2026-12-09T23:59:00Z",
+   "rw_rate_per_day": 1000,
+   "rw_rewards_max_spread": 3.5,
+   "rw_rewards_min_size": 200
+  },
+  {
+   "meeting": "Dec-2026",
+   "meeting_date": "2026-12-09",
+   "event_slug": "fed-decision-in-december-20260729232808632",
+   "event_url": "https://polymarket.com/event/fed-decision-in-december-20260729232808632",
+   "outcome": "50+ bps increase",
+   "bp": 50,
+   "condition_id": "0xa5f8a44504de30fa36fff2406b2b27b3d15476ed50448e4fc3ead4861d8a5e3e",
+   "yes_token": "35090254409399344650860070211816464534198960801264823587796928404808383727584",
+   "no_token": "17037715451587457598270390992151934195448806241696976473961259598235638233970",
+   "tick_size": 0.001,
+   "fee_schedule": {
+    "exponent": 1,
+    "rate": 0.05,
+    "takerOnly": true,
+    "rebateRate": 0.25
+   },
+   "fees_enabled": true,
+   "volume": 6500070.878522001,
+   "end_date": "2026-12-09T23:59:00Z",
+   "rw_rate_per_day": 600,
+   "rw_rewards_max_spread": 2.5,
+   "rw_rewards_min_size": 200
+  },
+  {
+   "meeting": "Jan-2027",
+   "meeting_date": "2027-01-27",
+   "event_slug": "fed-decision-in-january-20260729233815502",
+   "event_url": "https://polymarket.com/event/fed-decision-in-january-20260729233815502",
+   "outcome": "50+ bps decrease",
+   "bp": -50,
+   "condition_id": "0xfd0fb47daa40f79ed1bd8a0645d028c4583391b70860e4447f93b3b9fe797865",
+   "yes_token": "45053521911672808043600263178798111402897730682087979734684574823004307023433",
+   "no_token": "54892629532396715672060844552184409083592827625930470370999146720346626910259",
+   "tick_size": 0.001,
+   "fee_schedule": {
+    "exponent": 1,
+    "rate": 0.05,
+    "takerOnly": true,
+    "rebateRate": 0.25
+   },
+   "fees_enabled": true,
+   "volume": 747166.5560180001,
+   "end_date": "2027-01-28T04:59:00Z",
+   "rw_rate_per_day": null
+  },
+  {
+   "meeting": "Jan-2027",
+   "meeting_date": "2027-01-27",
+   "event_slug": "fed-decision-in-january-20260729233815502",
+   "event_url": "https://polymarket.com/event/fed-decision-in-january-20260729233815502",
+   "outcome": "25 bps decrease",
+   "bp": -25,
+   "condition_id": "0x0bbe79a986a3f84ea82ebe714159fcfaa488f80df878599e2cd9297ea57ee60f",
+   "yes_token": "55531205670373260499988385930313327116586167390725681551489621136380793885916",
+   "no_token": "109592678904810057002493483716660995296395997473352977641574408716547799045975",
+   "tick_size": 0.001,
+   "fee_schedule": {
+    "exponent": 1,
+    "rate": 0.05,
+    "takerOnly": true,
+    "rebateRate": 0.25
+   },
+   "fees_enabled": true,
+   "volume": 639222.8482110001,
+   "end_date": "2027-01-28T04:59:00Z",
+   "rw_rate_per_day": null
+  },
+  {
+   "meeting": "Jan-2027",
+   "meeting_date": "2027-01-27",
+   "event_slug": "fed-decision-in-january-20260729233815502",
+   "event_url": "https://polymarket.com/event/fed-decision-in-january-20260729233815502",
+   "outcome": "No change",
+   "bp": 0,
+   "condition_id": "0xf6e7c89ec4b5d3c887ed9b70dfbcac9392e287367783ce475d32e8c16ed9f61c",
+   "yes_token": "63563009510989471204377539732457086916124654411092982704760023438039220215330",
+   "no_token": "36342864926284644003283595741257595655709757799681943153551982143131732331338",
+   "tick_size": 0.01,
+   "fee_schedule": {
+    "exponent": 1,
+    "rate": 0.05,
+    "takerOnly": true,
+    "rebateRate": 0.25
+   },
+   "fees_enabled": true,
+   "volume": 787287.1312960001,
+   "end_date": "2027-01-28T04:59:00Z",
+   "rw_rate_per_day": 99,
+   "rw_rewards_max_spread": 4.5,
+   "rw_rewards_min_size": 50
+  },
+  {
+   "meeting": "Jan-2027",
+   "meeting_date": "2027-01-27",
+   "event_slug": "fed-decision-in-january-20260729233815502",
+   "event_url": "https://polymarket.com/event/fed-decision-in-january-20260729233815502",
+   "outcome": "25 bps increase",
+   "bp": 25,
+   "condition_id": "0x50642b28be893e8752649e9ae6d687558fc5dcfeeecd10713cf59ef6ea0edce4",
+   "yes_token": "58421987972100586826330616250690474504359298033602990223828098109695719571344",
+   "no_token": "63396423986062034636625373404202970920080078602349826866595954726582462497358",
+   "tick_size": 0.01,
+   "fee_schedule": {
+    "exponent": 1,
+    "rate": 0.05,
+    "takerOnly": true,
+    "rebateRate": 0.25
+   },
+   "fees_enabled": true,
+   "volume": 867562.0954989999,
+   "end_date": "2027-01-28T04:59:00Z",
+   "rw_rate_per_day": 101,
+   "rw_rewards_max_spread": 4.5,
+   "rw_rewards_min_size": 50
+  },
+  {
+   "meeting": "Jan-2027",
+   "meeting_date": "2027-01-27",
+   "event_slug": "fed-decision-in-january-20260729233815502",
+   "event_url": "https://polymarket.com/event/fed-decision-in-january-20260729233815502",
+   "outcome": "50+ bps increase",
+   "bp": 50,
+   "condition_id": "0x21cd6160d9de634104b719d50afa4a8ebfa3d0cd10609bf752c77b66f7bbd6a7",
+   "yes_token": "42452047366442275682382090045397807109079755041679563479952649068752467853296",
+   "no_token": "98510419442387454895805766707264980500719881328500989992133076060209252362108",
+   "tick_size": 0.001,
+   "fee_schedule": {
+    "exponent": 1,
+    "rate": 0.05,
+    "takerOnly": true,
+    "rebateRate": 0.25
+   },
+   "fees_enabled": true,
+   "volume": 519938.24529899994,
+   "end_date": "2027-01-28T04:59:00Z",
+   "rw_rate_per_day": null
+  },
+  {
+   "meeting": "Mar-2027",
+   "meeting_date": "2027-03-17",
+   "event_slug": "fed-decision-in-march-2027",
+   "event_url": "https://polymarket.com/event/fed-decision-in-march-2027",
+   "outcome": "50+ bps decrease",
+   "bp": -50,
+   "condition_id": "0x7bb48add7156e9b385622245a0a6f6e816d34e746ca76a99b07e25b73b416aa6",
+   "yes_token": "72612704312923885299068186217617859425932305660495725868557341241641879185967",
+   "no_token": "57215896395961892590587881975134811480859693216952469706292999050590981348372",
+   "tick_size": 0.001,
+   "fee_schedule": {
+    "exponent": 1,
+    "rate": 0.05,
+    "takerOnly": true,
+    "rebateRate": 0.25
+   },
+   "fees_enabled": true,
+   "volume": 30896.430835,
+   "end_date": "2027-03-18T03:59:00Z",
+   "rw_rate_per_day": null
+  },
+  {
+   "meeting": "Mar-2027",
+   "meeting_date": "2027-03-17",
+   "event_slug": "fed-decision-in-march-2027",
+   "event_url": "https://polymarket.com/event/fed-decision-in-march-2027",
+   "outcome": "25 bps decrease",
+   "bp": -25,
+   "condition_id": "0x8139036a2e0b369bc65e1f85c7857e22b0b9345964f1fa225b772a82f555c0b5",
+   "yes_token": "19781804393258198177641863164505049882400842598385213026395188425100058155396",
+   "no_token": "11336635539871747467148539685152593565839196415939703623965568848361386577805",
+   "tick_size": 0.001,
+   "fee_schedule": {
+    "exponent": 1,
+    "rate": 0.05,
+    "takerOnly": true,
+    "rebateRate": 0.25
+   },
+   "fees_enabled": true,
+   "volume": 26962.833068,
+   "end_date": "2027-03-18T03:59:00Z",
+   "rw_rate_per_day": null
+  },
+  {
+   "meeting": "Mar-2027",
+   "meeting_date": "2027-03-17",
+   "event_slug": "fed-decision-in-march-2027",
+   "event_url": "https://polymarket.com/event/fed-decision-in-march-2027",
+   "outcome": "No change",
+   "bp": 0,
+   "condition_id": "0x473aa7f3b03f4bcb2fec9481ab6116e25e0a2cfbfb6781c01386e611427efc92",
+   "yes_token": "67062128334253757212001792228718415922525358311513927326764955603971264172359",
+   "no_token": "113632544866231057356048233837512000263768875531086989204540934044594660329258",
+   "tick_size": 0.01,
+   "fee_schedule": {
+    "exponent": 1,
+    "rate": 0.05,
+    "takerOnly": true,
+    "rebateRate": 0.25
+   },
+   "fees_enabled": true,
+   "volume": 49448.98666,
+   "end_date": "2027-03-18T03:59:00Z",
+   "rw_rate_per_day": 9,
+   "rw_rewards_max_spread": 4.5,
+   "rw_rewards_min_size": 20
+  },
+  {
+   "meeting": "Mar-2027",
+   "meeting_date": "2027-03-17",
+   "event_slug": "fed-decision-in-march-2027",
+   "event_url": "https://polymarket.com/event/fed-decision-in-march-2027",
+   "outcome": "25 bps increase",
+   "bp": 25,
+   "condition_id": "0xb1a8312921fde446e0a20c3c0a4f84add9b481e9ea720a638205fe3ebc94f581",
+   "yes_token": "13476507927314734838219675133168494984211470927473653618849401778599658635351",
+   "no_token": "20996872123961974315291024251166350940077268037972925067606735810553302287674",
+   "tick_size": 0.01,
+   "fee_schedule": {
+    "exponent": 1,
+    "rate": 0.05,
+    "takerOnly": true,
+    "rebateRate": 0.25
+   },
+   "fees_enabled": true,
+   "volume": 106182.08872500001,
+   "end_date": "2027-03-18T03:59:00Z",
+   "rw_rate_per_day": 11,
+   "rw_rewards_max_spread": 4.5,
+   "rw_rewards_min_size": 20
+  },
+  {
+   "meeting": "Mar-2027",
+   "meeting_date": "2027-03-17",
+   "event_slug": "fed-decision-in-march-2027",
+   "event_url": "https://polymarket.com/event/fed-decision-in-march-2027",
+   "outcome": "50+ bps increase",
+   "bp": 50,
+   "condition_id": "0x68c657018c77e98e182e92faf4c6d28a4bff2cf603a9ba8bf94f2a03c26d05e7",
+   "yes_token": "115114969196966667519205977980706789734017669094663501947524890722319165940471",
+   "no_token": "72719512702146948917166941117602868237654475832723885454417735349758982054411",
+   "tick_size": 0.001,
+   "fee_schedule": {
+    "exponent": 1,
+    "rate": 0.05,
+    "takerOnly": true,
+    "rebateRate": 0.25
+   },
+   "fees_enabled": true,
+   "volume": 30680.097893,
+   "end_date": "2027-03-18T03:59:00Z",
+   "rw_rate_per_day": null
+  }
+ ],
+ "problems": [],
+ "meetings": [
+  {
+   "meeting": "Dec-2026",
+   "title": "Fed Decision in December?",
+   "date": "2026-12-09",
+   "zq": {
+    "contract": "ZQZ6",
+    "pre": "ZQX6"
+   }
+  },
+  {
+   "meeting": "Jan-2027",
+   "title": "Fed Decision in January?",
+   "date": "2027-01-27",
+   "zq": {
+    "contract": "ZQF7",
+    "post": "ZQG7"
+   }
+  },
+  {
+   "meeting": "Mar-2027",
+   "title": "Fed Decision in March?",
+   "date": "2027-03-17",
+   "zq": {
+    "contract": "ZQH7",
+    "pre": "ZQG7",
+    "check": "ZQJ7"
+   }
+  }
+ ]
+}

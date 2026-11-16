@@ -1,7 +1,8 @@
-# 20 · Central Bank: FOMC market-making study (live, paper only)
+# Central Bank: FOMC market-making study (live, paper only)
 
-Version 1 (2026-11-16). Load with `00_desk_charter.md`; the charter's method and data rules win. Work lives in the
-`central_bank/` folder ("Central Bank"). Status: **waiting for Guillaume's go-ahead and the open inputs below.**
+Version 1 (2026-11-16). Load with `prompts/00_desk_charter.md`; the charter's method and data rules win. Work lives in
+`studies/central_bank/` ("Central Bank"); pipeline jobs `cb-recorder`, `cb-daily`, `cb-weekly`.
+Status: **recorder live since 16 Nov 2026; Phases 2-3 running on placeholders until the open inputs below arrive.**
 
 **Hard rule: paper trading only.** Never place, sign or cancel a real order, and never ask for a private key.
 

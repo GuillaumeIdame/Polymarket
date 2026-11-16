@@ -1,0 +1,49 @@
+# Study pipeline: every prompt in studies/<name>/PROMPT.md is a job here.
+# Run one job:        python3 -m pipeline.run run holder-scan
+# Run the scheduler:  python3 -m pipeline.run schedule        (docker compose service "pipeline")
+# Show last runs:     python3 -m pipeline.run status
+# Schedules are 5-field cron in UTC. Services run forever and are restarted by Docker, not by the scheduler.
+# Paper only: no job places, signs or cancels orders, and none needs a private key.
+
+jobs:
+  holder-scan:
+    prompt: studies/holder_quality_scan/PROMPT.md
+    cwd: studies/holder_quality_scan
+    schedule: "17 6 * * *"            # daily, before the European open
+    steps:
+      - python3 scan.py
+      - python3 enrich.py
+    outputs: art                      # {rows, meta} JSON files, one per dashboard dataset
+    dashboard: https://claude.ai/artifact/42j5PX5UAVBwRZzKcNqpBX
+    timeout_min: 30
+
+  cb-recorder:                        # Central Bank Phase 1: runs continuously until 17 Mar 2027
+    prompt: studies/central_bank/PROMPT.md
+    cwd: studies/central_bank
+    service: true
+    steps:
+      - ./run_recorder.sh
+
+  cb-daily:                           # Central Bank: re-resolve markets, daily curve check
+    prompt: studies/central_bank/PROMPT.md
+    cwd: studies/central_bank
+    schedule: "41 21 * * *"
+    steps:
+      - python3 discover.py
+      - python3 signals.py
+      - python3 report.py
+    outputs: art
+    dashboard: https://claude.ai/artifact/KPTucgQQLMiVK1iFJzRzYF
+    timeout_min: 30
+
+  cb-weekly:                          # Central Bank Phases 2-3 and the weekly one-page report
+    prompt: studies/central_bank/PROMPT.md
+    cwd: studies/central_bank
+    schedule: "23 7 * * 1"            # Mondays
+    steps:
+      - python3 signals.py
+      - python3 paper.py
+      - python3 report.py
+    outputs: art
+    dashboard: https://claude.ai/artifact/KPTucgQQLMiVK1iFJzRzYF
+    timeout_min: 60

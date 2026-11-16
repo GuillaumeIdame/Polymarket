@@ -7,3 +7,6 @@ __pycache__/
 data/
 !data/.gitkeep
 .env
+# study outputs: regenerated each run, archived under data/pipeline/archive (full wallet addresses stay out of git)
+studies/holder_quality_scan/out/
+studies/*/art/

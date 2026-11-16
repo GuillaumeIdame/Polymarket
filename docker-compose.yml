@@ -28,3 +28,15 @@ services:
   gamma:             # slim market snapshot hourly (full snapshot: add a daily `gamma --full` cron)
     <<: *common
     entrypoint: ["sh", "-c", "while true; do pmkt gamma; sleep 3600; done"]
+
+  # ---- study pipeline (pipeline/jobs.yaml). Outputs land in ./studies/<study>/art and ./data/pipeline.
+  cb-recorder:       # Central Bank study, Phase 1: FOMC books every 5 s + trades, until 17 Mar 2027
+    <<: *common
+    volumes: ["./data:/data", "./studies:/app/studies"]
+    working_dir: /app/studies/central_bank
+    entrypoint: ["./run_recorder.sh"]
+  pipeline:          # scheduler: daily holder scan, daily/weekly Central Bank analysis and report
+    <<: *common
+    volumes: ["./data:/data", "./studies:/app/studies", "./pipeline:/app/pipeline:ro"]
+    working_dir: /app
+    entrypoint: ["python3", "-m", "pipeline.run", "schedule"]
